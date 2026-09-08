@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>SmritiCare</title>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}"
+>
+
+<style>
+
+    /* =========================================
+       SMRITICARE COHESIVE THEME TOKENS
+    ========================================== */
+
+    :root {
+        --bg-canvas: #fbf9f6;
+        --card-bg: #ffffff;
+        --text-dark: #1e293b;
+        --text-regular: #334155;
+        --text-muted: #475569;
+        --text-soft: #64748b;
+
+        --primary: #2d6a5f;
+        --primary-hover: #23544b;
+        --primary-surface: #eef6f4;
+        --primary-border: #cadfd9;
+
+        /* Activity Harmonious Pastels */
+        --memory-bg: #f4effc;
+        --memory-border: #ded2f5;
+        --memory-text: #593f87;
+
+        --attention-bg: #fff5eb;
+        --attention-border: #f8dbc2;
+        --attention-text: #8c4e20;
+
+        --recall-bg: #edf6f0;
+        --recall-border: #cbe6d5;
+        --recall-text: #266341;
+
+        --object-bg: #edf4fb;
+        --object-border: #cadef3;
+        --object-text: #265582;
+
+        --border-subtle: #eae6df;
+        --shadow-subtle: 0 4px 18px rgba(30, 41, 59, 0.05);
+        --shadow-hover: 0 6px 20px rgba(30, 41, 59, 0.08);
+        --radius-sm: 12px;
+        --radius-md: 18px;
+        --radius-lg: 24px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        background: var(--bg-canvas);
+        color: var(--text-dark);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+        max-width: 720px;
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 24px 20px 110px;
+    }
+
+    button:focus-visible, a:focus-visible, textarea:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+    /* Header */
+    .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--card-bg);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 22px 24px;
+        box-shadow: var(--shadow-subtle);
+        margin-bottom: 24px;
+    }
+
+    .top-header h1 {
+        margin: 0 0 4px;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text-dark);
+        letter-spacing: -0.2px;
+    }
+
+    .top-header p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .profile-icon {
+        width: 54px;
+        height: 54px;
+        min-width: 54px;
+        border-radius: 50%;
+        background: var(--primary-surface);
+        border: 1px solid var(--primary-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    /* Section Headings */
+    .section-heading,
+    .language-heading,
+    .patient-reminders-heading,
+    .my-memories-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+
+    .section-heading h2,
+    .language-heading h2,
+    .patient-reminders-heading h2,
+    .my-memories-heading h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .section-heading span,
+    .language-heading span,
+    .patient-reminders-heading span,
+    .my-memories-heading span {
+        font-size: 22px;
+    }
+
+    /* Language Buttons */
+    .language-section {
+        margin-bottom: 26px;
+    }
+
+    .language-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .language-button {
+        border: 1.5px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+        padding: 14px 10px;
+        background: var(--card-bg);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-regular);
+        transition: all 0.2s ease;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .language-button:hover {
+        transform: translateY(-1px);
+        background: #faf8f5;
+        border-color: #cbd5e1;
+    }
+
+    .language-button.selected {
+        background: var(--primary-surface);
+        border-color: var(--primary);
+        color: var(--primary);
+        font-weight: 700;
+        box-shadow: 0 2px 10px rgba(45, 106, 95, 0.12);
+    }
+
+    /* Reminders */
+    .patient-reminders {
+        margin-bottom: 28px;
+    }
+
+    .patient-reminder-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .patient-reminder {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 20px;
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-subtle);
+        transition: transform 0.2s ease;
+    }
+
+    .patient-reminder:hover {
+        transform: translateY(-1px);
+    }
+
+    .patient-reminder-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        background: #faf6ee;
+        border: 1px solid #f2e7d5;
+    }
+
+    .patient-reminder-content {
+        flex: 1;
+    }
+
+    .patient-reminder-content h3 {
+        margin: 0 0 3px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .patient-reminder-time {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .patient-reminder-notes {
+        margin: 4px 0 0;
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    .patient-reminder-completed {
+        opacity: 0.6;
+        background: #f8faf9;
+    }
+
+    .patient-reminder-completed h3 {
+        text-decoration: line-through;
+    }
+
+    .patient-reminder-status {
+        font-size: 18px;
+        min-width: 36px;
+        color: #287d35;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .patient-reminder-done-button {
+        border: 1px solid var(--primary-border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        background: var(--primary-surface);
+        color: var(--primary);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        min-height: 42px;
+        transition: all 0.2s ease;
+    }
+
+    .patient-reminder-done-button:hover {
+        background: #e1efe9;
+        transform: translateY(-1px);
+    }
+
+    .no-reminders,
+    .reminders-loading,
+    .reminder-error {
+        padding: 24px;
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        border: 1px dashed var(--border-subtle);
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 15px;
+    }
+
+    /* Activities */
+    .section {
+        margin-bottom: 28px;
+    }
+
+    .activity-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .activity-card {
+        border-radius: var(--radius-md);
+        padding: 22px 18px;
+        border: 1px solid;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 170px;
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: var(--shadow-subtle);
+        transition: all 0.2s ease;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .activity-card:nth-child(1) {
+        background-color: var(--memory-bg);
+        border-color: var(--memory-border);
+    }
+    .activity-card:nth-child(2) {
+        background-color: var(--attention-bg);
+        border-color: var(--attention-border);
+    }
+    .activity-card:nth-child(3) {
+        background-color: var(--recall-bg);
+        border-color: var(--recall-border);
+    }
+    .activity-card:nth-child(4) {
+        background-color: var(--object-bg);
+        border-color: var(--object-border);
+    }
+
+    .activity-icon {
+        font-size: 32px;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .activity-card h3 {
+        margin: 0 0 4px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .activity-card p {
+        margin: 0 0 12px;
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.45;
+        flex-grow: 1;
+    }
+
+    .activity-arrow {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        color: var(--text-dark);
+        font-size: 14px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Memory Circle */
+    .memory-circle-card {
+        margin-top: 10px;
+        margin-bottom: 28px;
+        padding: 24px;
+        border-radius: var(--radius-lg);
+        background: linear-gradient(135deg, #f7f3fd 0%, #fff9f6 100%);
+        border: 1px solid #ebdff5;
+        box-shadow: var(--shadow-subtle);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .memory-circle-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .memory-circle-card::after {
+        content: "💜";
+        position: absolute;
+        right: 18px;
+        bottom: 10px;
+        font-size: 3.5rem;
+        opacity: 0.12;
+        pointer-events: none;
+    }
+
+    .memory-circle-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e5d8f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin-bottom: 12px;
+    }
+
+    .memory-circle-card h2 {
+        margin: 0 0 6px;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .memory-circle-card p {
+        margin: 0 0 14px;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--text-muted);
+        max-width: 85%;
+    }
+
+    .memory-circle-arrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #634399;
+        background: #ffffff;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid #dfcff2;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .memory-circle-form {
+        display: none;
+        margin-top: 18px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .memory-circle-form textarea {
+        width: 100%;
+        min-height: 110px;
+        box-sizing: border-box;
+        border: 1.5px solid #dcd1ef;
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        font-family: inherit;
+        font-size: 15px;
+        resize: vertical;
+        background: #ffffff;
+        outline: none;
+        color: var(--text-dark);
+    }
+
+    .memory-voice-btn {
+        width: 100%;
+        margin-top: 10px;
+        border: 1px solid #dcd1ef;
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        background: #ffffff;
+        color: #634399;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .memory-voice-btn:hover {
+        background: #fbf9fe;
+        border-color: #7b58b5;
+    }
+
+    .memory-circle-share-button {
+        width: 100%;
+        margin-top: 10px;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        background: #7351ad;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        min-height: 48px;
+        box-shadow: 0 3px 10px rgba(115, 81, 173, 0.2);
+        transition: all 0.2s ease;
+    }
+
+    .memory-circle-share-button:hover {
+        background: #624296;
+    }
+
+    .memory-circle-share-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .memory-circle-message {
+        display: none;
+        margin-top: 12px;
+        padding: 14px;
+        border-radius: var(--radius-sm);
+        background: #ffffff;
+        border: 1px solid #dcd1ef;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-regular);
+    }
+
+    /* My Memories */
+    .my-memories-section {
+        margin-top: 28px;
+        margin-bottom: 28px;
+    }
+
+    .my-memories-subtitle {
+        margin: 0 0 16px;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--text-muted);
+    }
+
+    .my-memories-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .my-memory-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-subtle);
+        overflow: hidden;
+        box-shadow: var(--shadow-subtle);
+        transition: transform 0.2s ease;
+    }
+
+    .my-memory-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .my-memory-image-wrapper {
+        width: 100%;
+        height: 145px;
+        overflow: hidden;
+        background: #f6f3fc;
+    }
+
+    .my-memory-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .my-memory-content {
+        padding: 16px;
+    }
+
+    .my-memory-category {
+        display: inline-block;
+        margin-bottom: 6px;
+        padding: 4px 10px;
+        border-radius: 8px;
+        background: var(--memory-bg);
+        color: var(--memory-text);
+        border: 1px solid var(--memory-border);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .my-memory-title {
+        margin: 0 0 6px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .my-memory-detail {
+        margin: 3px 0;
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    /* Quick Help */
+    .quick-help-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .quick-help-grid button {
+        background: var(--card-bg);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 20px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: var(--shadow-subtle);
+        transition: all 0.2s ease;
+        min-height: 100px;
+        justify-content: center;
+        font-size: 26px;
+    }
+
+    .quick-help-grid button:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+        background: #faf8f5;
+    }
+
+    .quick-help-grid button span {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-regular);
+    }
+
+    /* Voice Assistant */
+    .voice-section {
+        margin-top: 10px;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .voice-button {
+        width: 100%;
+        padding: 16px 20px;
+        border-radius: var(--radius-md);
+        background: var(--primary);
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(45, 106, 95, 0.25);
+        transition: all 0.2s ease;
+        min-height: 54px;
+        border: none;
+    }
+
+    .voice-button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+    }
+
+    .voice-button.listening {
+        background: #ba6d32;
+        box-shadow: 0 0 0 6px rgba(186, 109, 50, 0.25);
+        animation: pulseListening 1.5s infinite;
+    }
+
+    @keyframes pulseListening {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    #assistantStatus {
+        margin: 12px 0 0;
+        font-size: 15px;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .message-box {
+        position: fixed;
+        bottom: 84px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 40px);
+        max-width: 600px;
+        background: #1e293b;
+        color: #ffffff;
+        padding: 14px 20px;
+        border-radius: var(--radius-sm);
+        font-size: 15px;
+        font-weight: 500;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        text-align: center;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(720px, 100%);
+        background: #ffffff;
+        display: flex;
+        justify-content: space-around;
+        padding: 12px 10px;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+        border-top: 1px solid var(--border-subtle);
+        z-index: 900;
+    }
+
+    .bottom-nav button {
+        background: none;
+        border: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 6px 16px;
+        border-radius: var(--radius-sm);
+        color: var(--text-regular);
+    }
+
+    .bottom-nav button:hover {
+        background: #f8faf9;
+        color: var(--primary);
+    }
+
+    .bottom-nav span {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 540px) {
+        .app-container { padding: 16px 14px 100px; }
+        .activity-grid, .my-memories-list, .language-buttons { grid-template-columns: 1fr; }
+    }
+</style>
+
+</head>
+
+
+<body>
+
+<div class="app-container">
+
+<header class="top-header">
+    <div>
+        <h1>Namaste! 🌸</h1>
+        <p>Let's make today a happy day.</p>
+    </div>
+    <div class="profile-icon">👵</div>
+</header>
+
+<main>
+
+<section class="language-section">
+    <div class="language-heading">
+        <h2>Choose Your Language</h2>
+        <span>🌐</span>
+    </div>
+    <div class="language-buttons">
+        <!-- Pass 'true' explicitly to announce only on manual button clicks -->
+        <button class="language-button selected" id="languageEnglish" onclick="selectLanguage('english', true)">
+            🇬🇧 English
+        </button>
+        <button class="language-button" id="languageHindi" onclick="selectLanguage('hindi', true)">
+            🇮🇳 हिंदी
+        </button>
+        <button class="language-button" id="languageAssamese" onclick="selectLanguage('assamese', true)">
+            🇮🇳 অসমীয়া
+        </button>
+    </div>
+</section>
+
+<section class="patient-reminders">
+    <div class="patient-reminders-heading">
+        <h2>Today's Reminders</h2>
+        <span>⏰</span>
+    </div>
+    <div id="patientReminderList" class="patient-reminder-list">
+        <div class="reminders-loading">
+            <p>Loading your reminders...</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-heading">
+        <h2>Today's Activities</h2>
+        <span>🧠</span>
+    </div>
+    <div class="activity-grid">
+        <div class="activity-card" onclick="openActivityWithVoice('/memory-game', 'memory')">
+            <div class="activity-icon">🧠</div>
+            <h3>Memory Game</h3>
+            <p>Remember familiar objects.</p>
+            <span class="activity-arrow">Play →</span>
+        </div>
+        <div class="activity-card" onclick="openActivityWithVoice('/attention-game', 'attention')">
+            <div class="activity-icon">👀</div>
+            <h3>Focus Game</h3>
+            <p>Improve attention and concentration.</p>
+            <span class="activity-arrow">Play →</span>
+        </div>
+        <div class="activity-card" onclick="openActivityWithVoice('/recall-game', 'recall')">
+            <div class="activity-icon">📖</div>
+            <h3>Daily Recall</h3>
+            <p>Remember everyday events.</p>
+            <span class="activity-arrow">Play →</span>
+        </div>
+        <div class="activity-card" onclick="openActivityWithVoice('/object-match', 'object')">
+            <div class="activity-icon">🧩</div>
+            <h3>Object Match</h3>
+            <p>Match familiar everyday objects.</p>
+            <span class="activity-arrow">Play →</span>
+        </div>
+    </div>
+</section>
+
+<section class="memory-circle-card" onclick="toggleMemoryCircle(event)">
+    <div class="memory-circle-icon">💜</div>
+    <h2>Memory Circle</h2>
+    <p>Share a special memory with your caregivers and loved ones.</p>
+    <span class="memory-circle-arrow" id="memoryCircleArrow">Share a Memory →</span>
+
+    <div class="memory-circle-form" id="memoryCircleForm">
+        <textarea
+            id="memoryText"
+            placeholder="Write a special memory you would like to share with those who care for you..."
+            onclick="event.stopPropagation()"
+        ></textarea>
+
+        <button type="button" class="memory-voice-btn" id="memoryVoiceBtn" onclick="recordMemoryVoice(event)">
+            🎙️ Speak Your Memory
+        </button>
+
+        <button class="memory-circle-share-button" id="memoryCircleShareButton" onclick="shareMemory(event)">
+            💜 Share Memory
+        </button>
+
+        <div class="memory-circle-message" id="memoryCircleMessage"></div>
+    </div>
+</section>
+
+<section class="my-memories-section">
+    <div class="my-memories-heading">
+        <h2>My Memories</h2>
+        <span>🖼️</span>
+    </div>
+    <p class="my-memories-subtitle">Special people, places, and moments from your life.</p>
+    <div id="myMemoriesList" class="my-memories-list">
+        <div class="my-memories-loading">
+            <p>Loading your memories...</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-heading">
+        <h2>Quick Help</h2>
+        <span>❤️</span>
+    </div>
+    <div class="quick-help-grid">
+        <button onclick="drinkWater()">
+            💧
+            <span>Drink Water</span>
+        </button>
+        <button onclick="showTodaysPlan()">
+            📅
+            <span>Today's Plan</span>
+        </button>
+        <button onclick="callCaregiver()">
+            📞
+            <span>Call Caregiver</span>
+        </button>
+    </div>
+</section>
+
+<!-- Voice Assistant Section -->
+<section class="voice-section">
+    <button class="voice-button" id="voiceButton" onclick="startVoiceAssistant()">
+        🎙️
+        <span id="talkButtonText">Talk to Me</span>
+    </button>
+    <p id="assistantStatus">Tap the button and tell me what you need.</p>
+</section>
+
+<div id="messageBox" class="message-box" style="display:none;"></div>
+
+</main>
+
+<nav class="bottom-nav">
+    <button onclick="openActivity('/')">
+        🏠
+        <span>Home</span>
+    </button>
+    <button onclick="openActivity('/dashboard')">
+        📊
+        <span>My Progress</span>
+    </button>
+    <button onclick="openActivity('/caregiver-dashboard')">
+        👩‍⚕️
+        <span>Caregiver</span>
+    </button>
+</nav>
+
+</div>
+
+<script src="{{ url_for('static', filename='espeak/espeakng.min.js') }}"></script>
+
+<script>
+let currentLanguage = localStorage.getItem("smritiCareLanguage") || "english";
+let voiceRecognition = null;
+let voiceListening = false;
+let voiceProcessing = false;
+
+const languageSettings = {
+    english: { recognition: "en-IN", speech: "en-IN" },
+    hindi: { recognition: "hi-IN", speech: "hi-IN" },
+    assamese: { recognition: "as-IN", speech: "as-IN" }
+};
+
+const translations = {
+    english: {
+        talk: "Talk to Me",
+        listening: "🎙️ Listening... Please speak.",
+        processing: "🧠 Thinking...",
+        reminder: "Here are your reminders.",
+        noReminders: "You have no reminders right now.",
+        allDone: "Wonderful. You have completed all your reminders.",
+        reminderComplete: "Wonderful! Your reminder is completed.",
+        water: "Please drink some water. Staying hydrated is important.",
+        caregiver: "I am alerting your caregiver right away. Please sit comfortably and rest.",
+        caregiverAlertSent: "🔔 Your caregiver has been alerted and will assist you shortly.",
+        dashboard: "Opening your progress dashboard.",
+        greeting: "Namaste. It is lovely to hear from you. How can I help you today?",
+        help: "You can talk to me naturally. Tell me how you feel, ask to call your caregiver, check reminders, or play an activity.",
+        repeat: "Of course. Please tell me what you would like me to repeat.",
+        stopped: "Okay. I have stopped.",
+        gameLaunch: {
+            memory: "Opening Memory Game. Look at the objects and remember.",
+            attention: "Opening Focus Game. Find the matching symbol.",
+            recall: "Opening Daily Recall. Remember the everyday details.",
+            object: "Opening Object Match. Choose the matching object."
+        }
+    },
+
+    hindi: {
+        talk: "मुझसे बात करें",
+        listening: "🎙️ सुन रही हूँ... कृपया बोलिए।",
+        processing: "🧠 सोच रही हूँ...",
+        reminder: "ये आपके आज के रिमाइंडर हैं।",
+        noReminders: "अभी आपके लिए कोई रिमाइंडर नहीं है।",
+        allDone: "बहुत अच्छा। आपने अपने सभी रिमाइंडर पूरे कर लिए हैं।",
+        reminderComplete: "बहुत अच्छा! आपका रिमाइंडर पूरा हो गया है।",
+        water: "कृपया थोड़ा पानी पीजिए। शरीर में पानी की कमी नहीं होनी चाहिए।",
+        caregiver: "मैंने आपके केयरगिवर को तुरंत संदेश भेज दिया है। कृपया आराम से बैठिए।",
+        caregiverAlertSent: "🔔 केयरगिवर को संदेश भेज दिया गया है।",
+        dashboard: "आपका प्रोग्रेस डैशबोर्ड खोल रही हूँ।",
+        greeting: "नमस्ते। आपसे बात करके बहुत अच्छा लगा। बताइए मैं आपकी क्या मदद करूँ?",
+        help: "आप मुझसे अपनी सेहत के बारे में बात कर सकते हैं, केयरगिवर को बुला सकते हैं या कोई गेम खेल सकते हैं।",
+        repeat: "बिल्कुल। मैं फिर से बताती हूँ।",
+        stopped: "ठीक है। मैंने रोक दिया है।",
+        gameLaunch: {
+            memory: "मेमोरी गेम खोला जा रहा है। चित्रों को ध्यान से देखें।",
+            attention: "फोकस गेम खोला जा रहा है। सही प्रतीक पहचानें।",
+            recall: "डेली रिकॉल खोला जा रहा है। कहानी ध्यान से सुनें।",
+            object: "ऑब्जेक्ट मैच खोला जा रहा है। सही वस्तु चुनें।"
+        }
+    },
+
+    assamese: {
+        talk: "মোৰ সৈতে কথা পাতক",
+        listening: "🎙️ শুনি আছোঁ... অনুগ্ৰহ কৰি কওক।",
+        processing: "🧠 ভাবি আছোঁ...",
+        reminder: "এইবোৰ আপোনাৰ আজিৰ ৰিমাইণ্ডাৰ।",
+        noReminders: "এতিয়া আপোনাৰ কোনো ৰিমাইণ্ডাৰ নাই।",
+        allDone: "বৰ ভাল। আপুনি সকলো ৰিমাইণ্ডাৰ সম্পূৰ্ণ কৰিছে।",
+        reminderComplete: "বৰ ভাল! আপোনাৰ ৰিমাইণ্ডাৰ সম্পূৰ্ণ হৈছে।",
+        water: "অনুগ্ৰহ কৰি অলপ পানী খাওক।",
+        caregiver: "কেয়াৰগিভাৰক তৎক্ষণাত জনোৱা হৈছে। অনুগ্ৰহ কৰি বিশ্ৰাম লওক।",
+        caregiverAlertSent: "🔔 কেয়াৰগিভাৰক সতৰ্ক কৰা হৈছে।",
+        dashboard: "আপোনাৰ প্ৰগ্ৰেছ ডেশ্ববৰ্ড খুলি আছোঁ।",
+        greeting: "নমস্কাৰ। আপোনাৰ সৈতে কথা পাতি ভাল লাগিল।",
+        help: "আপুনি মোক স্বাস্থ্যৰ কথা বা কেয়াৰগিভাৰৰ বিষয়ে ক’ব পাৰে।",
+        repeat: "নিশ্চয়।",
+        stopped: "মই ৰখাই দিলোঁ।",
+        gameLaunch: {
+            memory: "মেমৰি গেম খোলা হৈছে। বস্তুসমূহ মনত ৰাখক।",
+            attention: "ফ'কাছ গেম খোলা হৈছে। মনোযোগ দিয়ক।",
+            recall: "ডেইলি ৰিকল খোলা হৈছে। কাহিনীটো মনত ৰাখক।",
+            object: "অবজেক্ট মেচ খোলা হৈছে। একে বস্তু বাছক।"
+        }
+    }
+};
+
+/* Voice announcement before navigation */
+function openActivityWithVoice(url, activityType) {
+    const lang = currentLanguage in translations ? currentLanguage : "english";
+    const announcement = translations[lang].gameLaunch[activityType] || "Opening game.";
+
+    showReminderMessage("🎮 " + announcement);
+    speakText(announcement);
+
+    setTimeout(() => {
+        window.location.href = url;
+    }, 1800);
+}
+
+function openActivity(url) {
+    window.location.href = url;
+}
+
+/* Call Caregiver */
+function callCaregiver() {
+    const lang = currentLanguage in translations ? currentLanguage : "english";
+    const voiceMsg = translations[lang].caregiver;
+    const bannerMsg = translations[lang].caregiverAlertSent;
+
+    showReminderMessage(bannerMsg);
+    speakText(voiceMsg);
+
+    try {
+        const existingAlerts = JSON.parse(localStorage.getItem("smriti_caregiver_alerts") || "[]");
+        existingAlerts.unshift({
+            id: Date.now(),
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            message: "Patient requested assistance / Not feeling well."
+        });
+        localStorage.setItem("smriti_caregiver_alerts", JSON.stringify(existingAlerts.slice(0, 10)));
+    } catch (e) {}
+}
+
+/* Voice Input for Memory Circle */
+function recordMemoryVoice(event) {
+    if (event) event.stopPropagation();
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const textarea = document.getElementById("memoryText");
+    const voiceBtn = document.getElementById("memoryVoiceBtn");
+
+    if (!SpeechRecognition || !textarea || !voiceBtn) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = languageSettings[currentLanguage].recognition;
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    voiceBtn.textContent = "🎙️ Listening...";
+    voiceBtn.style.background = "#fff5eb";
+    voiceBtn.style.color = "#ba6d32";
+
+    recognition.onresult = function(e) {
+        const transcript = e.results[0][0].transcript.trim();
+        if (transcript) {
+            textarea.value = textarea.value ? textarea.value + " " + transcript : transcript;
+        }
+        voiceBtn.textContent = "🎙️ Speak Your Memory";
+        voiceBtn.style.background = "#ffffff";
+        voiceBtn.style.color = "#634399";
+    };
+
+    recognition.onerror = function() {
+        voiceBtn.textContent = "🎙️ Speak Your Memory";
+        voiceBtn.style.background = "#ffffff";
+        voiceBtn.style.color = "#634399";
+    };
+
+    recognition.onend = function() {
+        voiceBtn.textContent = "🎙️ Speak Your Memory";
+        voiceBtn.style.background = "#ffffff";
+        voiceBtn.style.color = "#634399";
+    };
+
+    recognition.start();
+}
+
+/* Select Language - SILENT BY DEFAULT UNLESS announce === true */
+function selectLanguage(language, announce = false) {
+    currentLanguage = language;
+    localStorage.setItem("smritiCareLanguage", language);
+
+    if (voiceRecognition) {
+        try { voiceRecognition.abort(); } catch (e) {}
+        voiceRecognition = null;
+    }
+
+    voiceListening = false;
+    voiceProcessing = false;
+    resetVoiceButton();
+
+    document.querySelectorAll(".language-button").forEach(b => b.classList.remove("selected"));
+    const selectedButton = document.getElementById("language" + language.charAt(0).toUpperCase() + language.slice(1));
+    if (selectedButton) selectedButton.classList.add("selected");
+
+    const translation = translations[currentLanguage];
+    document.getElementById("talkButtonText").textContent = translation.talk;
+
+    if (announce) {
+        document.getElementById("assistantStatus").textContent = getLanguageSelectedMessage();
+        showReminderMessage(getLanguageSelectedMessage());
+        speakText(getLanguageSelectedMessage());
+    } else {
+        document.getElementById("assistantStatus").textContent = "Tap the button and tell me what you need.";
+    }
+}
+
+function getLanguageSelectedMessage() {
+    if (currentLanguage === "hindi") return "हिंदी भाषा चुनी गई है।";
+    if (currentLanguage === "assamese") return "অসমীয়া ভাষা নিৰ্বাচন কৰা হৈছে।";
+    return "English language selected.";
+}
+
+/* Reminders */
+async function loadPatientReminders() {
+    const reminderList = document.getElementById("patientReminderList");
+    try {
+        const response = await fetch("/api/reminders");
+        const data = await response.json();
+        if (!data.success) throw new Error();
+        renderPatientReminders(data.reminders);
+    } catch (error) {
+        reminderList.innerHTML = '<div class="reminder-error"><p>We could not load your reminders.</p></div>';
+    }
+}
+
+function renderPatientReminders(reminders) {
+    const reminderList = document.getElementById("patientReminderList");
+    if (!reminders || reminders.length === 0) {
+        reminderList.innerHTML = '<div class="no-reminders"><p>🌸 No reminders for today.</p></div>';
+        return;
+    }
+
+    let html = "";
+    reminders.forEach(function(reminder) {
+        const completed = Number(reminder.completed) === 1;
+        const icon = reminderCategoryIcon(reminder.category);
+        const time = formatReminderTime(reminder.reminder_time);
+        const notes = reminder.notes ? '<p class="patient-reminder-notes">' + escapeHtml(reminder.notes) + '</p>' : "";
+        const status = completed
+            ? '<span class="patient-reminder-status">✓</span>'
+            : '<button class="patient-reminder-done-button" onclick="markPatientReminderDone(' + reminder.id + ')">Done</button>';
+
+        html += '<div class="patient-reminder ' + (completed ? "patient-reminder-completed" : "") + '">' +
+            '<div class="patient-reminder-icon">' + icon + '</div>' +
+            '<div class="patient-reminder-content">' +
+                '<h3>' + escapeHtml(reminder.title) + '</h3>' +
+                '<p class="patient-reminder-time">' + time + '</p>' + notes +
+            '</div>' +
+            '<div>' + status + '</div>' +
+        '</div>';
+    });
+    reminderList.innerHTML = html;
+}
+
+function formatReminderTime(timeString) {
+    if (!timeString) return "";
+    const parts = timeString.split(":");
+    if (parts.length < 2) return timeString;
+    let hour = parseInt(parts[0], 10);
+    const minute = parts[1];
+    let period = hour >= 12 ? "PM" : "AM";
+    if (hour === 0) hour = 12;
+    else if (hour > 12) hour = hour - 12;
+    return hour + ":" + minute + " " + period;
+}
+
+function reminderCategoryIcon(category) {
+    if (category === "Medicine") return "💊";
+    if (category === "Water") return "💧";
+    if (category === "Meal") return "🍲";
+    if (category === "Appointment") return "📅";
+    if (category === "Activity") return "🌸";
+    return "🔔";
+}
+
+async function markPatientReminderDone(reminderId) {
+    try {
+        const response = await fetch("/api/reminders/" + reminderId + "/complete", { method: "PUT" });
+        const data = await response.json();
+        if (!data.success) throw new Error();
+        showReminderMessage(translations[currentLanguage].reminderComplete);
+        speakText(translations[currentLanguage].reminderComplete);
+        await loadPatientReminders();
+    } catch (error) {
+        showReminderMessage("Something went wrong. Please try again.");
+    }
+}
+
+async function speakPatientReminders() {
+    try {
+        const response = await fetch("/api/reminders");
+        const data = await response.json();
+        const translation = translations[currentLanguage];
+
+        if (!data.success || !data.reminders || data.reminders.length === 0) {
+            speakText(translation.noReminders);
+            showReminderMessage("🌸 " + translation.noReminders);
+            return;
+        }
+
+        const active = data.reminders.filter(r => Number(r.completed) !== 1);
+        if (active.length === 0) {
+            speakText(translation.allDone);
+            showReminderMessage("🌸 " + translation.allDone);
+            return;
+        }
+
+        let spokenText = translation.reminder + " ";
+        active.forEach((r, idx) => {
+            spokenText += (idx + 1) + ". " + r.title + " at " + formatReminderTime(r.reminder_time) + ". ";
+        });
+
+        showReminderMessage("⏰ " + active.length + " reminder(s) available.");
+        speakText(spokenText);
+    } catch (error) {
+        speakText("Sorry, I could not check your reminders right now.");
+    }
+}
+
+function drinkWater() {
+    const msg = translations[currentLanguage].water;
+    showReminderMessage("💧 " + msg);
+    speakText(msg);
+}
+
+function showTodaysPlan() {
+    speakPatientReminders();
+}
+
+/* Memory Circle */
+function toggleMemoryCircle(event) {
+    if (event) event.stopPropagation();
+    const form = document.getElementById("memoryCircleForm");
+    const arrow = document.getElementById("memoryCircleArrow");
+
+    if (form.style.display === "block") {
+        form.style.display = "none";
+        arrow.textContent = "Share a Memory →";
+        return;
+    }
+
+    form.style.display = "block";
+    arrow.textContent = "Write your memory below ↓";
+    setTimeout(() => {
+        const txt = document.getElementById("memoryText");
+        if (txt) txt.focus();
+    }, 100);
+}
+
+async function shareMemory(event) {
+    if (event) event.stopPropagation();
+    const textElem = document.getElementById("memoryText");
+    const btn = document.getElementById("memoryCircleShareButton");
+    const msg = document.getElementById("memoryCircleMessage");
+    const val = textElem.value.trim();
+
+    if (!val) {
+        msg.textContent = "💜 Please write a memory first.";
+        msg.style.display = "block";
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Sharing...";
+    msg.style.display = "none";
+
+    try {
+        const res = await fetch("/api/memory-circle", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ memory_text: val })
+        });
+        const d = await res.json();
+        if (!d.success) throw new Error();
+
+        msg.textContent = "💜 Your memory has been shared with those who care for you.";
+        msg.style.display = "block";
+        textElem.value = "";
+        btn.textContent = "✓ Memory Shared";
+        speakText("Your memory has been shared with those who care for you.");
+    } catch (e) {
+        msg.textContent = "❌ Could not share memory. Please try again.";
+        msg.style.display = "block";
+    } finally {
+        if (btn.textContent !== "✓ Memory Shared") {
+            btn.disabled = false;
+            btn.textContent = "💜 Share Memory";
+        }
+    }
+}
+
+function showReminderMessage(message) {
+    const box = document.getElementById("messageBox");
+    box.textContent = message;
+    box.style.display = "block";
+    setTimeout(() => { box.style.display = "none"; }, 5000);
+}
+
+/* Text to Speech */
+let availableVoices = [];
+function loadSpeechVoices() { 
+    availableVoices = window.speechSynthesis.getVoices(); 
+}
+loadSpeechVoices();
+if ("onvoiceschanged" in window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
+}
+
+function speakText(text) {
+    if (!text) return;
+    if (currentLanguage === "assamese") { speakAssamese(text); return; }
+    if (!("speechSynthesis" in window)) return;
+
+    const cleanText = text
+        .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (!cleanText) return;
+
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(cleanText);
+    speech.lang = languageSettings[currentLanguage].speech;
+    speech.rate = 0.85;
+    speech.pitch = 1;
+
+    // Strict priority: Google US English -> Isha -> Samantha[cite: 5]
+    if (currentLanguage === "english") {
+        const preferredVoice =
+            availableVoices.find(v => v.name === "Google US English" && v.lang === "en-US") ||
+            availableVoices.find(v => v.name === "Isha" && v.lang === "en-IN") ||
+            availableVoices.find(v => v.name === "Samantha" && v.lang === "en-US");
+
+        if (preferredVoice) speech.voice = preferredVoice;
+    } else {
+        const langCode = languageSettings[currentLanguage].speech.toLowerCase().split("-")[0];
+        const match = availableVoices.find(v => v.lang.toLowerCase().startsWith(langCode));
+        if (match) speech.voice = match;
+    }
+
+    window.speechSynthesis.speak(speech);
+}
+
+/* My Memories */
+async function loadMyMemories() {
+    const list = document.getElementById("myMemoriesList");
+    if (!list) return;
+
+    try {
+        const res = await fetch("/api/memory-gallery");
+        const data = await res.json();
+        if (!data.success) throw new Error();
+        renderMyMemories(data.memories || []);
+    } catch (e) {
+        list.innerHTML = '<div class="my-memories-error"><p>We could not load your memories.</p></div>';
+    }
+}
+
+function renderMyMemories(memories) {
+    const list = document.getElementById("myMemoriesList");
+    if (!list) return;
+    if (!memories || memories.length === 0) {
+        list.innerHTML = '<div class="my-memories-empty"><p>💜 Your special memories will appear here.</p></div>';
+        return;
+    }
+
+    let html = "";
+    memories.forEach(m => {
+        html += '<article class="my-memory-card" onclick=\'openMemoryReminiscence(' + JSON.stringify(m).replace(/'/g, "\\'") + ')\' style="cursor:pointer;">' +
+            '<div class="my-memory-image-wrapper">' +
+                '<img src="' + escapeHtml(m.image_url) + '" alt="' + escapeHtml(m.title) + '" class="my-memory-image" loading="lazy">' +
+            '</div>' +
+            '<div class="my-memory-content">' +
+                '<span class="my-memory-category">' + escapeHtml(m.category || "Life Memory") + '</span>' +
+                '<h3 class="my-memory-title">' + escapeHtml(m.title) + '</h3>' +
+                (m.person ? '<p class="my-memory-detail">👤 ' + escapeHtml(m.person) + '</p>' : '') +
+                (m.place ? '<p class="my-memory-detail">📍 ' + escapeHtml(m.place) + '</p>' : '') +
+            '</div>' +
+        '</article>';
+    });
+    list.innerHTML = html;
+}
+
+let activeReminiscenceMemory = null;
+let activeReminiscenceQuestion = "";
+let activeReminiscenceExpectedAnswer = "";
+
+function openMemoryReminiscence(memory) {
+    activeReminiscenceMemory = memory;
+    const existing = document.getElementById("memoryReminiscencePanel");
+    if (existing) existing.remove();
+
+    const panel = document.createElement("div");
+    panel.id = "memoryReminiscencePanel";
+    panel.innerHTML =
+        '<div style="position:fixed;inset:0;background:rgba(30,41,59,0.55);backdrop-filter:blur(2px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;">' +
+            '<div style="background:#ffffff;width:100%;max-width:520px;border-radius:24px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,0.18);border:1px solid #eae6df;">' +
+                '<button type="button" onclick="closeMemoryReminiscence()" style="float:right;border:none;background:none;font-size:26px;cursor:pointer;color:#64748b;">×</button>' +
+                '<div style="font-size:34px;margin-bottom:8px;">💜</div>' +
+                '<h2 style="margin:0 0 8px;font-size:22px;color:#1e293b;">' + escapeHtml(memory.title || "A special memory") + '</h2>' +
+                '<p id="memoryReminiscenceStatus" style="color:#475569;font-size:15px;margin-bottom:16px;">Let me prepare this memory for you...</p>' +
+                '<div id="memoryReminiscenceContent"><div style="text-align:center;padding:25px;color:#64748b;">✨ Preparing a question...</div></div>' +
+            '</div>' +
+        '</div>';
+    document.body.appendChild(panel);
+
+    loadMemoryReminiscenceQuestion(memory.id);
+}
+
+async function loadMemoryReminiscenceQuestion(memoryId) {
+    const content = document.getElementById("memoryReminiscenceContent");
+    const status = document.getElementById("memoryReminiscenceStatus");
+    if (!content) return;
+
+    try {
+        const res = await fetch("/api/memory-gallery/" + memoryId + "/reminiscence-question");
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error();
+
+        activeReminiscenceQuestion = data.question;
+        activeReminiscenceExpectedAnswer = data.expected_answer;
+
+        if (status) status.textContent = "Let's remember this together. 💜";
+
+        content.innerHTML =
+            '<div style="background:#f5effb;border:1px solid #ded2f5;border-radius:16px;padding:20px;margin:18px 0;">' +
+                '<p style="font-size:19px;font-weight:700;line-height:1.5;margin:0;color:#3b2468;">' + escapeHtml(data.question) + '</p>' +
+            '</div>' +
+            '<textarea id="memoryReminiscenceAnswer" placeholder="Tell me about it..." style="width:100%;min-height:110px;padding:14px;border:1.5px solid #d0d5dd;border-radius:12px;font-size:15px;box-sizing:border-box;resize:vertical;font-family:inherit;outline:none;"></textarea>' +
+            '<button type="button" onclick="startMemoryReminiscenceVoice()" style="width:100%;margin-top:12px;padding:14px;border:1px solid #d0d5dd;border-radius:12px;background:#f8faf9;cursor:pointer;font-size:15px;font-weight:600;color:#334155;">🎙️ Speak your answer</button>' +
+            '<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">' +
+                '<button type="button" onclick="evaluateMemoryReminiscence()" style="flex:1;min-width:180px;padding:14px;border:none;border-radius:12px;background:#2d6a5f;color:#ffffff;font-weight:700;font-size:15px;cursor:pointer;">Continue 💜</button>' +
+            '</div>';
+
+        const promptIntro = currentLanguage === "hindi" 
+            ? "इस खास पल के बारे में आपको क्या याद है? " + data.question
+            : "What do you remember about this special moment? " + data.question;
+        speakText(promptIntro);
+
+    } catch (e) {
+        content.innerHTML = '<p style="color:#b91c1c;">I could not prepare this memory right now.</p>';
+    }
+}
+
+async function evaluateMemoryReminiscence() {
+    const answerBox = document.getElementById("memoryReminiscenceAnswer");
+    const content = document.getElementById("memoryReminiscenceContent");
+    if (!answerBox || !content) return;
+    const ans = answerBox.value.trim();
+    if (!ans) { alert("Please tell me something about this memory."); return; }
+
+    content.innerHTML = '<div style="text-align:center;padding:25px;color:#475569;">I am listening...</div>';
+
+    try {
+        const res = await fetch("/api/evaluate-personalized-answer", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question: activeReminiscenceQuestion,
+                expected_answer: activeReminiscenceExpectedAnswer,
+                patient_answer: ans,
+                memory_source: "Memory Gallery"
+            })
+        });
+        const data = await res.json();
+        const respText = (data.result === "correct") ? "That sounds like a lovely memory." : "Thank you for sharing that memory.";
+        
+        content.innerHTML =
+            '<div style="background:#edf6f0;border:1px solid #cbe6d5;border-radius:16px;padding:20px;">' +
+                '<p style="font-size:17px;color:#266341;margin:0 0 16px;">' + respText + '</p>' +
+                '<button type="button" onclick="showMemoryFollowup()" style="padding:12px 20px;border:none;border-radius:10px;background:#2d6a5f;color:#ffffff;font-weight:700;cursor:pointer;">Continue the story →</button>' +
+            '</div>';
+        speakText(respText);
+    } catch (e) {
+        content.innerHTML = '<p>Thank you for sharing that memory.</p><button type="button" onclick="showMemoryFollowup()">Continue →</button>';
+    }
+}
+
+async function showMemoryFollowup() {
+    const content = document.getElementById("memoryReminiscenceContent");
+    const ans = (document.getElementById("memoryReminiscenceAnswer") || {}).value || "";
+    if (!content || !activeReminiscenceMemory) return;
+
+    try {
+        const res = await fetch("/api/memory-gallery/" + activeReminiscenceMemory.id + "/reminiscence-followup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ patient_answer: ans })
+        });
+        const data = await res.json();
+        content.innerHTML =
+            '<div style="background:#f5effb;border:1px solid #ded2f5;border-radius:16px;padding:20px;margin-bottom:16px;">' +
+                '<p style="font-size:19px;font-weight:700;color:#3b2468;">' + escapeHtml(data.question) + '</p>' +
+            '</div>' +
+            '<button type="button" onclick="shareReminiscenceMemory()" style="width:100%;padding:14px;border:none;border-radius:12px;background:#7351ad;color:#ffffff;font-weight:700;cursor:pointer;">Share this memory with your caregivers</button>';
+        speakText(data.question);
+    } catch (e) {
+        closeMemoryReminiscence();
+    }
+}
+
+async function shareReminiscenceMemory() {
+    const ans = (document.getElementById("memoryReminiscenceAnswer") || {}).value || "";
+    let memText = activeReminiscenceMemory.title || "A special memory";
+    if (ans) memText += ": " + ans;
+
+    try {
+        await fetch("/api/memory-circle", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ memory_text: memText })
+        });
+        closeMemoryReminiscence();
+        showReminderMessage("💜 Memory shared!");
+    } catch (e) {
+        alert("We could not share this memory right now.");
+    }
+}
+
+function startMemoryReminiscenceVoice() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const answerBox = document.getElementById("memoryReminiscenceAnswer");
+    if (!SpeechRecognition || !answerBox) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = languageSettings[currentLanguage].recognition;
+    recognition.onresult = e => { answerBox.value = e.results[0][0].transcript; };
+    recognition.start();
+}
+
+function closeMemoryReminiscence() {
+    const panel = document.getElementById("memoryReminiscencePanel");
+    if (panel) panel.remove();
+}
+
+function escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = value || "";
+    return div.innerHTML;
+}
+
+function resetVoiceButton() {
+    const btn = document.getElementById("voiceButton");
+    if (btn) btn.classList.remove("listening");
+}
+
+/* Fail-safe Voice Assistant */
+function startVoiceAssistant() {
+    if (voiceListening) {
+        stopVoiceInteraction();
+        return;
+    }
+    if (voiceProcessing) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = document.getElementById("assistantStatus");
+    const button = document.getElementById("voiceButton");
+    const translation = translations[currentLanguage];
+
+    if (!SpeechRecognition) {
+        status.textContent = "Voice recognition is not supported in this browser.";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    voiceRecognition = recognition;
+    recognition.lang = languageSettings[currentLanguage].recognition;
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    voiceListening = true;
+    voiceProcessing = false;
+    status.textContent = translation.listening;
+    button.classList.add("listening");
+
+    recognition.onresult = function(event) {
+        voiceListening = false;
+        voiceProcessing = true;
+        status.textContent = translation.processing;
+
+        const transcript = event.results[0][0].transcript.trim();
+        const lower = transcript.toLowerCase();
+        status.textContent = "You said: " + transcript;
+        showReminderMessage("🎙️ " + transcript);
+
+        const isEmergency = [
+            "not feeling well", "sick", "unwell", "call caregiver", "caregiver", 
+            "help", "doctor", "pain", "hurt", "emergency", "need someone",
+            "तबीयत", "तबियत", "तबीयत खराब", "केयरगिवर", "मदद", "दर्द", "बीमार", "बुलाओ",
+            "গা ভাল লগা নাই", "কেয়াৰগিভাৰ"
+        ].some(p => lower.includes(p));
+
+        if (isEmergency) {
+            voiceProcessing = false;
+            resetVoiceButton();
+            callCaregiver();
+            return;
+        }
+
+        if (lower.includes("water") || lower.includes("thirsty") || lower.includes("पानी") || lower.includes("प्यास") || lower.includes("পানী")) {
+            voiceProcessing = false;
+            resetVoiceButton();
+            drinkWater();
+            return;
+        }
+
+        if (lower.includes("reminder") || lower.includes("रिमाइंडर") || lower.includes("काम") || lower.includes("plan") || lower.includes("ৰিমাইণ্ডাৰ")) {
+            voiceProcessing = false;
+            resetVoiceButton();
+            speakPatientReminders();
+            return;
+        }
+
+        setTimeout(() => {
+            askAIForVoiceIntent(transcript);
+        }, 150);
+    };
+
+    recognition.onerror = function() {
+        voiceListening = false;
+        voiceProcessing = false;
+        resetVoiceButton();
+        status.textContent = "I'm listening. Please tap Talk to Me again.";
+    };
+
+    recognition.onend = function() {
+        voiceListening = false;
+        voiceRecognition = null;
+        resetVoiceButton();
+    };
+
+    try {
+        recognition.start();
+    } catch (e) {
+        resetVoiceButton();
+    }
+}
+
+function stopVoiceInteraction() {
+    if (voiceRecognition) {
+        try { voiceRecognition.abort(); } catch (e) {}
+        voiceRecognition = null;
+    }
+    voiceListening = false;
+    voiceProcessing = false;
+    window.speechSynthesis.cancel();
+    resetVoiceButton();
+    document.getElementById("assistantStatus").textContent = translations[currentLanguage].stopped;
+}
+
+async function askAIForVoiceIntent(command) {
+    const status = document.getElementById("assistantStatus");
+    const translation = translations[currentLanguage];
+
+    try {
+        status.textContent = translation.processing;
+        let intent = "unknown";
+
+        try {
+            const intentRes = await fetch("/api/voice-intent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ transcript: command, language: currentLanguage })
+            });
+            const intentData = await intentRes.json();
+            if (intentData.success && intentData.intent) {
+                intent = intentData.intent;
+            }
+        } catch (e) {}
+
+        if (intent === "caregiver") {
+            callCaregiver();
+            voiceProcessing = false;
+            return;
+        }
+
+        const responseRes = await fetch("/api/voice-response", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                transcript: command,
+                intent: intent,
+                language: currentLanguage,
+                context: {}
+            })
+        });
+
+        const responseData = await responseRes.json();
+        let aiSpokenReply = "";
+
+        if (responseData.success && responseData.response && responseData.response.trim()) {
+            aiSpokenReply = responseData.response.trim();
+        } else {
+            aiSpokenReply = (currentLanguage === "hindi")
+                ? "मैं सुन रही हूँ। आप चिंता न करें, मैं आपके साथ हूँ।"
+                : "I am listening to you. Please don't worry, I am right here with you.";
+        }
+
+        showReminderMessage("💜 " + aiSpokenReply);
+        status.textContent = aiSpokenReply;
+        speakText(aiSpokenReply);
+
+        executeVoiceIntent(intent, command);
+
+    } catch (error) {
+        const fallbackMsg = (currentLanguage === "hindi")
+            ? "नमस्ते! मैं आपके साथ हूँ। बताइए मैं आपकी क्या मदद करूँ?"
+            : "Hello! I am right here with you. How can I help you today?";
+        status.textContent = fallbackMsg;
+        speakText(fallbackMsg);
+    } finally {
+        voiceProcessing = false;
+    }
+}
+
+function executeVoiceIntent(intent, originalTranscript) {
+    const lower = (originalTranscript || "").toLowerCase();
+
+    switch (intent) {
+        case "water":
+            drinkWater();
+            break;
+        case "reminders":
+            setTimeout(speakPatientReminders, 1200);
+            break;
+        case "memory_game":
+            setTimeout(() => { openActivityWithVoice("/memory-game", "memory"); }, 1400);
+            break;
+        case "attention_game":
+            setTimeout(() => { openActivityWithVoice("/attention-game", "attention"); }, 1400);
+            break;
+        case "recall_game":
+            setTimeout(() => { openActivityWithVoice("/recall-game", "recall"); }, 1400);
+            break;
+        case "object_match":
+            setTimeout(() => { openActivityWithVoice("/object-match", "object"); }, 1400);
+            break;
+        case "caregiver":
+            callCaregiver();
+            break;
+        case "caregiver_dashboard":
+            if (lower.includes("dashboard") || lower.includes("डैशबोर्ड")) {
+                setTimeout(() => { window.location.href = "/caregiver-dashboard"; }, 1400);
+            }
+            break;
+        case "progress":
+            if (lower.includes("progress") || lower.includes("dashboard") || lower.includes("प्रोग्रेस")) {
+                setTimeout(() => { window.location.href = "/dashboard"; }, 1400);
+            }
+            break;
+        case "memory_circle":
+            setTimeout(toggleMemoryCircle, 1200);
+            break;
+        case "stop":
+            stopVoiceInteraction();
+            break;
+        default:
+            break;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const savedLang = localStorage.getItem("smritiCareLanguage") || "english";
+    // ANNOUNCE IS SET TO FALSE SO IT NEVER SPEAKS ON PAGE LOAD / RELOAD
+    selectLanguage(savedLang, false);
+    loadPatientReminders();
+    loadMyMemories();
+});
+</script>
+
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("{{ url_for('static', filename='js/service-worker.js') }}")
+                .catch(() => {});
+        });
+    }
+</script>
+
+</body>
+</html>

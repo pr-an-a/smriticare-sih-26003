@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Object Match - SmritiCare</title>
+
+    <style>
+        :root {
+            --bg-canvas: #fbf9f6;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-regular: #334155;
+            --text-muted: #475569;
+            --text-soft: #64748b;
+
+            /* Object Match Theme Tokens */
+            --object-bg: #edf4fb;
+            --object-border: #cadef3;
+            --object-text: #265582;
+            --object-primary: #356899;
+            --object-hover: #265079;
+
+            --border-subtle: #eae6df;
+            --shadow-subtle: 0 4px 18px rgba(30, 41, 59, 0.05);
+            --shadow-hover: 0 6px 20px rgba(30, 41, 59, 0.08);
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg-canvas);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 16px 24px;
+            box-shadow: var(--shadow-subtle);
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            border: 1px solid var(--border-subtle);
+            background: #ffffff;
+            color: var(--text-regular);
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #f8faf9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .title-section h1 {
+            margin: 0 0 6px;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .title-section p {
+            margin: 0;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .difficulty-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-subtle);
+            text-align: center;
+        }
+
+        .difficulty-box strong {
+            font-size: 15px;
+            color: var(--text-regular);
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .difficulty-btn {
+            border: 1.5px solid var(--border-subtle);
+            background: #ffffff;
+            color: var(--text-regular);
+            padding: 10px 22px;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .difficulty-btn:hover {
+            background: #faf8f5;
+            border-color: #cbd5e1;
+        }
+
+        .difficulty-btn.active {
+            background: var(--object-primary);
+            color: #ffffff;
+            border-color: var(--object-primary);
+            box-shadow: 0 3px 10px rgba(53, 104, 153, 0.2);
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            padding: 36px 30px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-subtle);
+            text-align: center;
+        }
+
+        .progress {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--object-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .question {
+            font-size: 22px;
+            margin-bottom: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .target-object {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 26px;
+            border-radius: var(--radius-lg);
+            background: var(--object-bg);
+            border: 1.5px solid var(--object-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 85px;
+            line-height: 1;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .choice-btn {
+            border: 2px solid var(--border-subtle);
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 16px 8px;
+            font-size: 44px;
+            line-height: 1;
+            cursor: pointer;
+            min-height: 100px;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .choice-btn:hover {
+            transform: scale(1.03);
+            border-color: var(--object-border);
+        }
+
+        .choice-btn:disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+        }
+
+        .stat {
+            background: #faf8f5;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 10px 18px;
+            font-size: 14.5px;
+            color: var(--text-regular);
+        }
+
+        .stat strong {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .feedback {
+            min-height: 30px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--object-text);
+        }
+
+        .start-screen,
+        .result-screen {
+            text-align: center;
+        }
+
+        .start-screen h2,
+        .result-screen h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 12px;
+        }
+
+        .start-screen p,
+        .result-screen p {
+            font-size: 16.5px;
+            line-height: 1.65;
+            color: var(--text-muted);
+            max-width: 580px;
+            margin: 0 auto 12px;
+        }
+
+        .primary-btn {
+            border: none;
+            background: var(--object-primary);
+            color: #ffffff;
+            padding: 14px 30px;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 18px;
+            min-height: 50px;
+            box-shadow: 0 4px 14px rgba(53, 104, 153, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .primary-btn:hover {
+            background: var(--object-hover);
+            transform: translateY(-2px);
+        }
+
+        .next-level {
+            margin-top: 20px;
+            background: var(--object-bg);
+            border: 1px solid var(--object-border);
+            color: var(--object-text);
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .small-note {
+            margin-top: 14px;
+            font-size: 14px;
+            color: var(--text-soft);
+        }
+
+        .personalization-note {
+            margin: 18px auto 0;
+            max-width: 580px;
+            background: #edf6f0;
+            color: #266341;
+            border: 1px solid #cbe6d5;
+            padding: 13px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 650px) {
+            .page {
+                padding: 18px 14px 40px;
+            }
+            .choices {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .target-object {
+                width: 140px;
+                height: 140px;
+                font-size: 72px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- DIRECT HOME BUTTON -->
+    <div class="top-bar">
+        <button class="back-btn" onclick="goHome()">
+            ← Home
+        </button>
+
+        <div style="font-weight: 700; color: var(--object-text);">
+            🧩 Object Match
+        </div>
+    </div>
+
+    <div class="title-section">
+        <h1>🧩 Object Match</h1>
+        <p>Look at the object and choose the matching object below.</p>
+    </div>
+
+    <div class="difficulty-box">
+        <strong>Difficulty</strong>
+
+        <div class="difficulty-buttons">
+            <button class="difficulty-btn" id="easyBtn" onclick="setDifficulty('easy')">Easy</button>
+            <button class="difficulty-btn" id="mediumBtn" onclick="setDifficulty('medium')">Medium</button>
+            <button class="difficulty-btn" id="hardBtn" onclick="setDifficulty('hard')">Hard</button>
+        </div>
+    </div>
+
+    <div class="game-card" id="gameCard">
+
+        <div class="start-screen" id="startScreen">
+            <h2>🌼 Ready to Play?</h2>
+            <p>You will see a familiar everyday object. Choose the same object from the choices.</p>
+            <p>Take your time and enjoy the game.</p>
+            <button class="primary-btn" onclick="startGame()">▶ Start Game</button>
+            <div class="small-note">Your difficulty will adjust based on your performance.</div>
+            <div id="personalizationNote" class="personalization-note hidden"></div>
+        </div>
+
+        <div id="playScreen" style="display:none;">
+            <div class="progress" id="progressText">Question 1</div>
+            <div class="question">Which object is the same?</div>
+            <div class="target-object" id="targetObject">🥭</div>
+            <div class="choices" id="choicesContainer"></div>
+            <div class="feedback" id="feedback"></div>
+
+            <div class="stats">
+                <div class="stat">Correct: <strong id="correctCount">0</strong></div>
+                <div class="stat">Incorrect: <strong id="incorrectCount">0</strong></div>
+                <div class="stat">Time: <strong id="timeCount">0.0s</strong></div>
+            </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen" style="display:none;">
+            <h2>🎉 Well Done!</h2>
+            <p id="resultMessage"></p>
+
+            <div class="stats">
+                <div class="stat">Score: <strong id="finalScore">0%</strong></div>
+                <div class="stat">Correct: <strong id="finalCorrect">0</strong></div>
+                <div class="stat">Incorrect: <strong id="finalIncorrect">0</strong></div>
+                <div class="stat">Avg. Time: <strong id="finalTime">0.0s</strong></div>
+            </div>
+
+            <div class="next-level" id="nextLevelMessage"></div>
+
+            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px;">
+                <button class="primary-btn" onclick="startGame()" style="margin-top:0;">🔄 Play Again</button>
+                <button class="back-btn" onclick="goHome()" style="padding:14px 28px;">← Return Home</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function goHome() {
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+    window.location.href = "/";
+}
+
+const objectBank = [
+    { name: "Mango", emoji: "🥭" },
+    { name: "Key", emoji: "🔑" },
+    { name: "Cup", emoji: "☕" },
+    { name: "Flower", emoji: "🌸" },
+    { name: "Clock", emoji: "⏰" },
+    { name: "Book", emoji: "📖" },
+    { name: "Umbrella", emoji: "☂️" },
+    { name: "Diya", emoji: "🪔" },
+    { name: "Apple", emoji: "🍎" },
+    { name: "Bell", emoji: "🔔" }
+];
+
+const objectKeywords = {
+    "Mango": ["mango", "mangoes", "aam"],
+    "Key": ["key", "house", "home", "door"],
+    "Cup": ["tea", "chai", "coffee", "cup", "breakfast"],
+    "Flower": ["flower", "flowers", "garden", "gardening", "rose", "jasmine", "lotus"],
+    "Clock": ["clock", "time", "morning", "routine"],
+    "Book": ["book", "books", "reading", "read", "school", "study"],
+    "Umbrella": ["umbrella", "rain", "monsoon"],
+    "Diya": ["diya", "deepam", "lamp", "diwali", "festival", "festivals", "puja", "pooja"],
+    "Apple": ["apple", "fruit", "fruits"],
+    "Bell": ["bell", "temple", "prayer"]
+};
+
+let personalProfile = null;
+let familiarObjects = [];
+
+const difficultySettings = {
+    easy: { questions: 5, choices: 4 },
+    medium: { questions: 7, choices: 6 },
+    hard: { questions: 9, choices: 8 }
+};
+
+let difficulty = "easy";
+const urlParams = new URLSearchParams(window.location.search);
+const journeyMode = urlParams.get("journey") === "1";
+const journeyDifficulty = urlParams.get("difficulty");
+
+if (journeyMode && (journeyDifficulty === "easy" || journeyDifficulty === "medium" || journeyDifficulty === "hard")) {
+    difficulty = journeyDifficulty;
+} else {
+    const savedDifficulty = localStorage.getItem("objectMatchDifficulty");
+    if (savedDifficulty === "easy" || savedDifficulty === "medium" || savedDifficulty === "hard") {
+        difficulty = savedDifficulty;
+    }
+}
+
+let currentQuestion = 0;
+let correctAnswers = 0;
+let incorrectAnswers = 0;
+let totalResponseTime = 0;
+let currentTarget = null;
+let questionStartTime = 0;
+let gameObjects = [];
+
+async function loadPersonalProfile() {
+    try {
+        const response = await fetch("/api/memory-profile");
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data && data.profile && typeof data.profile === "object") {
+            personalProfile = data.profile;
+        } else {
+            personalProfile = null;
+        }
+        findFamiliarObjects();
+        updatePersonalizationNote();
+    } catch (error) {
+        personalProfile = null;
+        familiarObjects = [];
+        updatePersonalizationNote();
+    }
+}
+
+function findFamiliarObjects() {
+    familiarObjects = [];
+    if (!personalProfile || typeof personalProfile !== "object") return;
+
+    let profileText = "";
+    Object.values(personalProfile).forEach(function(value) {
+        if (typeof value === "string") {
+            profileText += " " + value.toLowerCase();
+        }
+    });
+
+    objectBank.forEach(function(object) {
+        const keywords = objectKeywords[object.name] || [];
+        if (keywords.some(k => profileText.includes(k.toLowerCase()))) {
+            familiarObjects.push(object);
+        }
+    });
+}
+
+function updatePersonalizationNote() {
+    const note = document.getElementById("personalizationNote");
+    if (!note) return;
+    if (familiarObjects.length > 0) {
+        note.textContent = "🌱 Some familiar everyday objects connected to the patient's memory profile may appear more often in this activity.";
+        note.classList.remove("hidden");
+    } else {
+        note.textContent = "";
+        note.classList.add("hidden");
+    }
+}
+
+function getPersonalizedObjectPool() {
+    let pool = [...objectBank];
+    familiarObjects.forEach(function(object) { pool.push(object); });
+    return pool;
+}
+
+function setDifficulty(level) {
+    difficulty = level;
+    localStorage.setItem("objectMatchDifficulty", difficulty);
+    updateDifficultyButtons();
+}
+
+function updateDifficultyButtons() {
+    document.getElementById("easyBtn").classList.remove("active");
+    document.getElementById("mediumBtn").classList.remove("active");
+    document.getElementById("hardBtn").classList.remove("active");
+
+    if (difficulty === "easy") document.getElementById("easyBtn").classList.add("active");
+    if (difficulty === "medium") document.getElementById("mediumBtn").classList.add("active");
+    if (difficulty === "hard") document.getElementById("hardBtn").classList.add("active");
+}
+
+function shuffle(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function startGame() {
+    currentQuestion = 0;
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    totalResponseTime = 0;
+
+    gameObjects = shuffle(objectBank);
+
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("resultScreen").style.display = "none";
+    document.getElementById("playScreen").style.display = "block";
+
+    updateStats();
+    nextQuestion();
+}
+
+function nextQuestion() {
+    const settings = difficultySettings[difficulty];
+    if (currentQuestion >= settings.questions) {
+        finishGame();
+        return;
+    }
+
+    const personalizedPool = getPersonalizedObjectPool();
+    const shuffledPool = shuffle(personalizedPool);
+    currentTarget = shuffledPool[0];
+
+    document.getElementById("progressText").textContent = `Question ${currentQuestion + 1} of ${settings.questions}`;
+    document.getElementById("targetObject").textContent = currentTarget.emoji;
+    document.getElementById("feedback").textContent = "";
+
+    createChoices();
+    questionStartTime = performance.now();
+}
+
+function createChoices() {
+    const settings = difficultySettings[difficulty];
+    let choices = [currentTarget];
+    const otherObjects = shuffle(objectBank.filter(o => o.name !== currentTarget.name));
+    choices = choices.concat(otherObjects.slice(0, settings.choices - 1));
+    choices = shuffle(choices);
+
+    const container = document.getElementById("choicesContainer");
+    container.innerHTML = "";
+
+    choices.forEach(function(object) {
+        const button = document.createElement("button");
+        button.className = "choice-btn";
+        button.textContent = object.emoji;
+        button.setAttribute("aria-label", object.name);
+        button.onclick = function() { chooseObject(object, button); };
+        container.appendChild(button);
+    });
+}
+
+function chooseObject(selectedObject, selectedButton) {
+    const buttons = document.querySelectorAll(".choice-btn");
+    buttons.forEach(button => { button.disabled = true; });
+
+    const responseTime = (performance.now() - questionStartTime) / 1000;
+    totalResponseTime += responseTime;
+
+    if (selectedObject.name === currentTarget.name) {
+        correctAnswers++;
+        document.getElementById("feedback").textContent = "✅ Correct! Very good!";
+        selectedButton.style.border = "3px solid #2d6a5f";
+    } else {
+        incorrectAnswers++;
+        document.getElementById("feedback").textContent = `🌼 Good try! The answer was ${currentTarget.name}.`;
+        selectedButton.style.border = "3px solid #b91c1c";
+    }
+
+    updateStats();
+    currentQuestion++;
+    setTimeout(function() { nextQuestion(); }, 900);
+}
+
+function updateStats() {
+    document.getElementById("correctCount").textContent = correctAnswers;
+    document.getElementById("incorrectCount").textContent = incorrectAnswers;
+    const answered = correctAnswers + incorrectAnswers;
+    const averageTime = answered > 0 ? totalResponseTime / answered : 0;
+    document.getElementById("timeCount").textContent = averageTime.toFixed(1) + "s";
+}
+
+async function finishGame() {
+    document.getElementById("playScreen").style.display = "none";
+    document.getElementById("resultScreen").style.display = "block";
+
+    const settings = difficultySettings[difficulty];
+    const score = Math.round((correctAnswers / settings.questions) * 100);
+    const answered = correctAnswers + incorrectAnswers;
+    const averageResponseTime = answered > 0 ? totalResponseTime / answered : 0;
+
+    const previousDifficulty = difficulty;
+    let nextDifficulty = difficulty;
+
+    if (score >= 85) {
+        if (difficulty === "easy") nextDifficulty = "medium";
+        else if (difficulty === "medium") nextDifficulty = "hard";
+    } else if (score < 40) {
+        if (difficulty === "hard") nextDifficulty = "medium";
+        else if (difficulty === "medium") nextDifficulty = "easy";
+    }
+
+    localStorage.setItem("objectMatchDifficulty", nextDifficulty);
+
+    document.getElementById("finalScore").textContent = score + "%";
+    document.getElementById("finalCorrect").textContent = correctAnswers;
+    document.getElementById("finalIncorrect").textContent = incorrectAnswers;
+    document.getElementById("finalTime").textContent = averageResponseTime.toFixed(1) + "s";
+
+    let resultMessage = "";
+    if (score >= 85) resultMessage = "Excellent work! You matched the objects very well.";
+    else if (score >= 60) resultMessage = "Good job! Keep practicing and you will improve.";
+    else resultMessage = "That's okay. Take your time and try again.";
+
+    document.getElementById("resultMessage").textContent = resultMessage;
+
+    let adaptationMessage = "";
+    if (nextDifficulty !== previousDifficulty) {
+        if (nextDifficulty === "hard") adaptationMessage = "🌟 Excellent performance! Your next Object Match session will be harder.";
+        else if (nextDifficulty === "medium") adaptationMessage = "🌼 Your next session will use Medium difficulty.";
+        else if (nextDifficulty === "easy") adaptationMessage = "💛 Your next session will use Easy difficulty so you can practice comfortably.";
+    } else {
+        adaptationMessage = "Your difficulty will stay the same for your next session.";
+    }
+
+    document.getElementById("nextLevelMessage").textContent = adaptationMessage;
+    await saveResult(score, averageResponseTime, settings.questions, previousDifficulty);
+}
+
+async function saveResult(score, averageResponseTime, totalQuestions, completedDifficulty) {
+    try {
+        await fetch("/api/save-result", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                activity_type: "object_match",
+                difficulty: completedDifficulty,
+                objects_shown: totalQuestions,
+                correct_answers: correctAnswers,
+                incorrect_answers: incorrectAnswers,
+                missed_answers: 0,
+                response_time: averageResponseTime,
+                memory_score: score
+            })
+        });
+    } catch (error) {}
+}
+
+updateDifficultyButtons();
+loadPersonalProfile();
+</script>
+
+</body>
+</html>

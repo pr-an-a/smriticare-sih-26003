@@ -1,0 +1,180 @@
+{
+  "assam": {
+    "festivals": [
+      "Bihu",
+      "Rongali Bihu",
+      "Bhogali Bihu",
+      "Kongali Bihu"
+    ],
+    "foods": [
+      "pitha",
+      "khar",
+      "masor tenga",
+      "laru"
+    ],
+    "music_and_traditions": [
+      "Bihu songs",
+      "traditional Bihu dance",
+      "folk music"
+    ],
+    "places_and_landmarks": [
+      "Majuli",
+      "Kamakhya Temple",
+      "Guwahati"
+    ]
+  },
+  "meghalaya": {
+    "festivals": [
+      "Wangala",
+      "Nongkrem Dance",
+      "Shad Suk Mynsiem"
+    ],
+    "foods": [
+      "jadoh",
+      "dohneiihong",
+      "tungrymbai"
+    ],
+    "music_and_traditions": [
+      "traditional Khasi music",
+      "traditional Garo music",
+      "community dance traditions"
+    ],
+    "places_and_landmarks": [
+      "Shillong",
+      "Cherrapunji",
+      "Mawlynnong"
+    ]
+  },
+  "mizoram": {
+    "festivals": [
+      "Chapchar Kut",
+      "Mim Kut",
+      "Pawl Kut"
+    ],
+    "foods": [
+      "bai",
+      "saum",
+      "misa mach po"
+    ],
+    "music_and_traditions": [
+      "Mizo folk songs",
+      "traditional Mizo dances",
+      "community celebrations"
+    ],
+    "places_and_landmarks": [
+      "Aizawl",
+      "Durtlang",
+      "Reiek"
+    ]
+  },
+  "nagaland": {
+    "festivals": [
+      "Hornbill Festival",
+      "Moatsu",
+      "Sekrenyi"
+    ],
+    "foods": [
+      "smoked pork",
+      "axone",
+      "bamboo shoot dishes"
+    ],
+    "music_and_traditions": [
+      "Naga folk songs",
+      "traditional Naga dances",
+      "tribal craft traditions"
+    ],
+    "places_and_landmarks": [
+      "Kohima",
+      "Dzukou Valley",
+      "Khonoma"
+    ]
+  },
+  "tripura": {
+    "festivals": [
+      "Kharchi Puja",
+      "Garia Puja",
+      "Ker Puja"
+    ],
+    "foods": [
+      "mui borok",
+      "chakhwi",
+      "mosdeng"
+    ],
+    "music_and_traditions": [
+      "traditional Tripuri music",
+      "Hojagiri dance",
+      "traditional weaving"
+    ],
+    "places_and_landmarks": [
+      "Agartala",
+      "Ujjayanta Palace",
+      "Neermahal"
+    ]
+  },
+  "sikkim": {
+    "festivals": [
+      "Losar",
+      "Pang Lhabsol",
+      "Saga Dawa"
+    ],
+    "foods": [
+      "momos",
+      "thukpa",
+      "gundruk"
+    ],
+    "music_and_traditions": [
+      "traditional Sikkimese music",
+      "Cham dance",
+      "traditional Buddhist cultural practices"
+    ],
+    "places_and_landmarks": [
+      "Gangtok",
+      "Rumtek Monastery",
+      "Pelling"
+    ]
+  },
+  "manipur": {
+    "festivals": [
+      "Yaoshang",
+      "Lai Haraoba",
+      "Ningol Chakouba"
+    ],
+    "foods": [
+      "eromba",
+      "singju",
+      "chak-hao"
+    ],
+    "music_and_traditions": [
+      "Manipuri classical dance",
+      "traditional Manipuri music",
+      "Lai Haraoba traditions"
+    ],
+    "places_and_landmarks": [
+      "Imphal",
+      "Loktak Lake",
+      "Kangla Fort"
+    ]
+  },
+  "arunachal_pradesh": {
+    "festivals": [
+      "Losar",
+      "Solung",
+      "Si-Donyi"
+    ],
+    "foods": [
+      "thukpa",
+      "momos",
+      "bamboo shoot dishes"
+    ],
+    "music_and_traditions": [
+      "traditional tribal dances",
+      "folk songs",
+      "traditional weaving"
+    ],
+    "places_and_landmarks": [
+      "Tawang",
+      "Ziro",
+      "Itanagar"
+    ]
+  }
+}

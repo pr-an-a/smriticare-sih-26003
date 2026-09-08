@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SmritiCare - My Progress</title>
+
+    <style>
+
+        :root {
+            /* Warm, Calm Healthcare Palette */
+            --bg-canvas: #fbf9f6;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-regular: #334155;
+            --text-muted: #475569;
+            --text-soft: #64748b;
+
+            /* Brand & Trust Colors */
+            --primary: #2d6a5f;
+            --primary-hover: #23544b;
+            --primary-surface: #eef6f4;
+            --primary-border: #cadfd9;
+
+            /* Activity Pastel Accents */
+            --memory-bg: #f4effc;
+            --memory-border: #ded2f5;
+            --memory-text: #593f87;
+
+            --attention-bg: #fff5eb;
+            --attention-border: #f8dbc2;
+            --attention-text: #8c4e20;
+
+            --recall-bg: #edf6f0;
+            --recall-border: #cbe6d5;
+            --recall-text: #266341;
+
+            --object-bg: #edf4fb;
+            --object-border: #cadef3;
+            --object-text: #265582;
+
+            /* Layout Tokens */
+            --border-subtle: #eae6df;
+            --shadow-subtle: 0 4px 18px rgba(30, 41, 59, 0.05);
+            --shadow-hover: 0 6px 20px rgba(30, 41, 59, 0.08);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg-canvas);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1180px;
+            margin: auto;
+            padding: 30px 0 60px;
+        }
+
+        /* ============================
+           HEADER
+        ============================ */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 26px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: var(--text-muted);
+            font-size: 17px;
+        }
+
+        .back-button {
+            text-decoration: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-regular);
+            padding: 12px 22px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.2s ease;
+            min-height: 48px;
+        }
+
+        .back-button:hover {
+            background: #f8faf9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        /* ============================
+           BASE CARDS
+        ============================ */
+
+        .profile-card,
+        .card,
+        .progress-card,
+        .activity-card,
+        .history-card,
+        .feedback-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 26px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        /* Profile Card */
+
+        .profile-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            background: #ffffff;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .profile-info p {
+            margin: 4px 0;
+            color: var(--text-muted);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            padding: 13px 24px;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .edit-button {
+            background: var(--primary-surface);
+            color: var(--primary);
+            border: 1px solid var(--primary-border);
+        }
+
+        .edit-button:hover {
+            background: #e3efec;
+            transform: translateY(-1px);
+        }
+
+        .save-button {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(45, 106, 95, 0.2);
+        }
+
+        .save-button:hover {
+            background: var(--primary-hover);
+        }
+
+        .cancel-button {
+            background: #f1f5f9;
+            color: var(--text-regular);
+            border: 1px solid #cbd5e1;
+        }
+
+        .cancel-button:hover {
+            background: #e2e8f0;
+        }
+
+        .profile-edit {
+            display: none;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 26px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-regular);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: #ffffff;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 106, 95, 0.12);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .message {
+            margin-top: 12px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* ============================
+           PERSONAL COGNITIVE JOURNEY
+        ============================ */
+
+        .journey-card {
+            background: linear-gradient(135deg, #f2f7f5 0%, #faf6f0 100%);
+            border: 1px solid #dbe8e3;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 26px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .journey-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .journey-title {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.2px;
+        }
+
+        .journey-subtitle {
+            margin: 8px 0 0;
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .journey-badge {
+            display: inline-block;
+            padding: 7px 16px;
+            border-radius: 20px;
+            background: #ffffff;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid var(--primary-border);
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(45, 106, 95, 0.06);
+        }
+
+        .journey-content {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 20px;
+        }
+
+        .journey-recommendation {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .journey-recommendation h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-soft);
+        }
+
+        .journey-activity {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 4px 0 12px;
+            color: var(--primary);
+            line-height: 1.3;
+        }
+
+        .journey-detail {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 6px 0;
+            font-size: 15px;
+        }
+
+        .journey-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .journey-meta span {
+            padding: 6px 14px;
+            background: #f8faf9;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-regular);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .journey-reason {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .journey-reason h3 {
+            margin: 0 0 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .journey-reason p {
+            color: var(--text-muted);
+            line-height: 1.65;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .journey-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 22px;
+            text-decoration: none;
+            background: var(--primary);
+            color: #ffffff;
+            padding: 14px 26px;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
+            min-height: 50px;
+            box-shadow: 0 4px 14px rgba(45, 106, 95, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .journey-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(45, 106, 95, 0.3);
+        }
+
+        .journey-loading {
+            color: var(--text-muted);
+            padding: 16px 0;
+            font-size: 16px;
+        }
+
+        .journey-error {
+            color: #991b1b;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        /* ============================
+           SUMMARY METRICS
+        ============================ */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .summary-grid .card {
+            margin-bottom: 0;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+        }
+
+        .summary-grid .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .summary-grid .card h3 {
+            margin: 0 0 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .summary-grid .card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        /* ============================
+           FOUR ACTIVITY OVERVIEW CARDS
+        ============================ */
+
+        .activity-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .activity-overview .activity-card {
+            margin-bottom: 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .activity-overview .activity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Harmonious pastel identity per card */
+        .activity-overview .activity-card:nth-child(1) {
+            background-color: var(--memory-bg);
+            border-color: var(--memory-border);
+        }
+        .activity-overview .activity-card:nth-child(2) {
+            background-color: var(--attention-bg);
+            border-color: var(--attention-border);
+        }
+        .activity-overview .activity-card:nth-child(3) {
+            background-color: var(--recall-bg);
+            border-color: var(--recall-border);
+        }
+        .activity-overview .activity-card:nth-child(4) {
+            background-color: var(--object-bg);
+            border-color: var(--object-border);
+        }
+
+        .activity-card h2 {
+            margin-top: 0;
+            margin-bottom: 6px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .activity-score {
+            font-size: 30px;
+            font-weight: 700;
+            margin: 8px 0;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .activity-card p {
+            color: var(--text-muted);
+            line-height: 1.55;
+            font-size: 15px;
+            margin: 0 0 12px;
+        }
+
+        .activity-badge {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #ffffff;
+            color: var(--text-regular);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        /* ============================
+           PROGRESS & CHART
+        ============================ */
+
+        .progress-card h2,
+        .history-card h2,
+        .feedback-card h2,
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .progress-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .progress-highlight {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .progress-stat {
+            background: #faf8f5;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+            text-align: center;
+        }
+
+        .progress-stat .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .progress-stat .label {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .trend-container {
+            margin-top: 28px;
+        }
+
+        .trend-container h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            height: 290px;
+            padding: 24px 14px 12px;
+            border-bottom: 2px solid #e2e8f0;
+            background: #faf9f7;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            overflow-x: auto;
+        }
+
+        .bar-wrapper {
+            min-width: 65px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .bar {
+            width: 36px;
+            min-height: 10px;
+            border-radius: 8px 8px 0 0;
+            transition: height 0.4s ease;
+        }
+
+        .memory-bar {
+            background: #7a63aa;
+        }
+
+        .attention-bar {
+            background: #ba6d32;
+        }
+
+        .recall-bar {
+            background: #3b8265;
+        }
+
+        .object-bar {
+            background: #356899;
+        }
+
+        .bar-label {
+            margin-top: 8px;
+            font-size: 22px;
+        }
+
+        .bar-score {
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            color: var(--text-regular);
+        }
+
+        /* ============================
+           HISTORY
+        ============================ */
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .history-date {
+            color: var(--text-soft);
+            font-size: 14px;
+        }
+
+        .history-score {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-surface);
+            border: 1px solid var(--primary-border);
+            padding: 6px 14px;
+            border-radius: 8px;
+        }
+
+        /* ============================
+           FEEDBACK
+        ============================ */
+
+        .feedback-text {
+            font-size: 17px;
+            line-height: 1.65;
+            color: var(--text-regular);
+            background: #fbf9f5;
+            padding: 18px 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .note {
+            margin-top: 18px;
+            padding: 15px 18px;
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            border: 1px solid #e2e8f0;
+            color: var(--text-soft);
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        /* ============================
+           START ACTIVITIES
+        ============================ */
+
+        .start-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 14px;
+        }
+
+        .start-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-size: 17px;
+            font-weight: 700;
+            min-height: 60px;
+            border: 1.5px solid;
+            transition: all 0.2s ease;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .memory-button {
+            background: var(--memory-bg);
+            border-color: var(--memory-border);
+            color: var(--memory-text);
+        }
+
+        .attention-button {
+            background: var(--attention-bg);
+            border-color: var(--attention-border);
+            color: var(--attention-text);
+        }
+
+        .recall-button {
+            background: var(--recall-bg);
+            border-color: var(--recall-border);
+            color: var(--recall-text);
+        }
+
+        .object-button {
+            background: var(--object-bg);
+            border-color: var(--object-border);
+            color: var(--object-text);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-soft);
+            padding: 30px 20px;
+            font-size: 15px;
+        }
+
+        /* ============================
+           RESPONSIVE BREAKPOINTS
+        ============================ */
+
+        @media (max-width: 900px) {
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .activity-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .journey-content {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .activity-overview,
+            .start-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-highlight {
+                grid-template-columns: 1fr;
+            }
+
+            .header,
+            .profile-card,
+            .journey-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .journey-badge {
+                white-space: normal;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 94%;
+                padding-top: 20px;
+            }
+
+            .header h1 {
+                font-size: 27px;
+            }
+
+            .journey-title {
+                font-size: 23px;
+            }
+
+            .journey-activity {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>📊 My Progress</h1>
+
+            <p>
+                See how you are doing across your activities.
+            </p>
+
+        </div>
+
+        <a
+            href="/"
+            class="back-button"
+        >
+            ← Home
+        </a>
+
+    </div>
+
+
+    <!-- PATIENT PROFILE -->
+
+    <div class="profile-card">
+
+        <div class="profile-info">
+
+            <h2 id="patientName">
+                Loading patient...
+            </h2>
+
+            <p id="patientAge">
+                Age: --
+            </p>
+
+            <div
+                id="profileMessage"
+                class="message"
+            ></div>
+
+        </div>
+
+        <button
+            class="edit-button"
+            onclick="showEditProfile()"
+        >
+            ✏️ Edit Profile
+        </button>
+
+    </div>
+
+
+    <!-- PROFILE EDIT -->
+
+    <div
+        class="profile-edit"
+        id="profileEdit"
+    >
+
+        <div class="form-group">
+
+            <label for="editName">
+                Patient Name
+            </label>
+
+            <input
+                type="text"
+                id="editName"
+                placeholder="Enter patient name"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="editAge">
+                Age
+            </label>
+
+            <input
+                type="number"
+                id="editAge"
+                min="1"
+                max="120"
+                placeholder="Enter age"
+            >
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                class="save-button"
+                onclick="saveProfile()"
+            >
+                Save
+            </button>
+
+            <button
+                class="cancel-button"
+                onclick="hideEditProfile()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         PERSONAL COGNITIVE JOURNEY
+    =========================================== -->
+
+    <div class="journey-card">
+
+        <div class="journey-header">
+
+            <div>
+
+                <h2 class="journey-title">
+                    🌱 Today's Cognitive Journey
+                </h2>
+
+                <p class="journey-subtitle">
+                    Your next activity is selected from your
+                    recent activity history and personal memory profile.
+                </p>
+
+            </div>
+
+            <span
+                class="journey-badge"
+                id="journeyStatus"
+            >
+                AI PERSONALIZED
+            </span>
+
+        </div>
+
+
+        <div
+            id="journeyLoading"
+            class="journey-loading"
+        >
+            Building your personalized journey...
+        </div>
+
+
+        <div
+            id="journeyContent"
+            class="journey-content"
+            style="display: none;"
+        >
+
+            <div class="journey-recommendation">
+
+                <h3>
+                    Your next activity
+                </h3>
+
+                <div
+                    class="journey-activity"
+                    id="journeyActivity"
+                >
+                    --
+                </div>
+
+                <p
+                    class="journey-detail"
+                    id="journeyDifficulty"
+                >
+                    Difficulty: --
+                </p>
+
+                <p
+                    class="journey-detail"
+                    id="journeyPersonalization"
+                >
+                    Personalization: --
+                </p>
+
+                <div class="journey-meta">
+
+                    <span id="journeyRegion">
+                        Region: --
+                    </span>
+
+                    <span id="journeyAttempts">
+                        Recent activity data: --
+                    </span>
+
+                </div>
+
+                <a
+                    href="#"
+                    id="journeyButton"
+                    class="journey-button"
+                >
+                    Start Today's Activity →
+                </a>
+
+            </div>
+
+
+            <div class="journey-reason">
+
+                <h3>
+                    💡 Why this activity?
+                </h3>
+
+                <p id="journeyExplanation">
+                    --
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="journeyError"
+            class="journey-error"
+            style="display: none;"
+        >
+            We could not build your personalized journey right now.
+            Your regular activities are still available below.
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="card">
+
+            <h3>Activities Completed</h3>
+
+            <p
+                class="value"
+                id="totalActivities"
+            >
+                0
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Latest Score</h3>
+
+            <p
+                class="value"
+                id="latestScore"
+            >
+                --
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Average Score</h3>
+
+            <p
+                class="value"
+                id="averageScore"
+            >
+                --
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Best Score</h3>
+
+            <p
+                class="value"
+                id="bestScore"
+            >
+                --
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOUR ACTIVITY OVERVIEW CARDS -->
+
+    <div class="activity-overview">
+
+        <div class="activity-card">
+
+            <h2>🧠 Memory</h2>
+
+            <div
+                class="activity-score"
+                id="memoryAverage"
+            >
+                No attempts yet
+            </div>
+
+            <p id="memoryDetails">
+                Complete a Memory Game to begin tracking.
+            </p>
+
+            <span class="activity-badge">
+                Memory & Recall
+            </span>
+
+        </div>
+
+
+        <div class="activity-card">
+
+            <h2>🎯 Attention</h2>
+
+            <div
+                class="activity-score"
+                id="attentionAverage"
+            >
+                No attempts yet
+            </div>
+
+            <p id="attentionDetails">
+                Complete an Attention Activity to begin tracking.
+            </p>
+
+            <span class="activity-badge">
+                Focus & Concentration
+            </span>
+
+        </div>
+
+
+        <div class="activity-card">
+
+            <h2>📖 Daily Recall</h2>
+
+            <div
+                class="activity-score"
+                id="recallAverage"
+            >
+                No attempts yet
+            </div>
+
+            <p id="recallDetails">
+                Complete Daily Recall to begin tracking.
+            </p>
+
+            <span class="activity-badge">
+                Everyday Events
+            </span>
+
+        </div>
+
+
+        <div class="activity-card">
+
+            <h2>🧩 Object Match</h2>
+
+            <div
+                class="activity-score"
+                id="objectAverage"
+            >
+                No attempts yet
+            </div>
+
+            <p id="objectDetails">
+                Complete Object Match to begin tracking.
+            </p>
+
+            <span class="activity-badge">
+                Object Recognition
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- LONGITUDINAL PROGRESS -->
+
+    <div class="progress-card">
+
+        <h2>📈 Longitudinal Progress</h2>
+
+        <p>
+            Your performance across all completed cognitive activities.
+        </p>
+
+
+        <div class="progress-highlight">
+
+            <div class="progress-stat">
+
+                <div
+                    class="number"
+                    id="improvementValue"
+                >
+                    --
+                </div>
+
+                <div class="label">
+                    Improvement
+                </div>
+
+            </div>
+
+
+            <div class="progress-stat">
+
+                <div
+                    class="number"
+                    id="recentAverage"
+                >
+                    --
+                </div>
+
+                <div class="label">
+                    Recent Average
+                </div>
+
+            </div>
+
+
+            <div class="progress-stat">
+
+                <div
+                    class="number"
+                    id="consistencyValue"
+                >
+                    --
+                </div>
+
+                <div class="label">
+                    Consistency
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="trend-container">
+
+            <h3>Cognitive Score Trend</h3>
+
+            <div
+                class="chart"
+                id="chart"
+            >
+
+                <div class="empty-state">
+                    Complete activities to see your progress.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECENT HISTORY -->
+
+    <div class="history-card">
+
+        <h2>📝 Recent Activity</h2>
+
+        <div id="history">
+
+            <div class="empty-state">
+                Loading activity history...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FEEDBACK -->
+
+    <div class="feedback-card">
+
+        <h2>💬 Progress Feedback</h2>
+
+        <div
+            class="feedback-text"
+            id="feedback"
+        >
+            Complete an activity to receive progress feedback.
+        </div>
+
+        <!-- Read Aloud Button Added Here -->
+        <button
+            type="button"
+            onclick="speakProgressFeedback()"
+            style="
+                margin-top: 14px;
+                padding: 12px 20px;
+                border: 1px solid #cbd5e1;
+                border-radius: 12px;
+                background: #ffffff;
+                color: #334155;
+                font-weight: 700;
+                font-size: 15px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            "
+        >
+            🔊 Read Analysis Aloud
+        </button>
+
+        <div class="note">
+            🌸 SmritiCare is designed as a supportive activity platform.
+            Scores are for tracking engagement and progress and are
+            <strong>not a medical diagnosis</strong>.
+        </div>
+
+    </div>
+
+
+    <!-- START ACTIVITIES -->
+
+    <div class="card">
+
+        <h2>🎮 Start an Activity</h2>
+
+        <div class="start-grid">
+
+            <a
+                href="/memory-game"
+                class="start-button memory-button"
+            >
+                🧠 Start Memory Game
+            </a>
+
+            <a
+                href="/attention-game"
+                class="start-button attention-button"
+            >
+                🎯 Start Attention
+            </a>
+
+            <a
+                href="/recall-game"
+                class="start-button recall-button"
+            >
+                📖 Start Daily Recall
+            </a>
+
+            <a
+                href="/object-match"
+                class="start-button object-button"
+            >
+                🧩 Start Object Match
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let patientId = null;
+let cognitiveResults = [];
+
+
+/* ==========================================
+   PERSONAL COGNITIVE JOURNEY
+========================================== */
+
+async function loadCognitiveJourney() {
+
+    const loading =
+        document.getElementById(
+            "journeyLoading"
+        );
+
+    const content =
+        document.getElementById(
+            "journeyContent"
+        );
+
+    const errorElement =
+        document.getElementById(
+            "journeyError"
+        );
+
+    const status =
+        document.getElementById(
+            "journeyStatus"
+        );
+
+
+    try {
+
+        loading.style.display =
+            "block";
+
+        content.style.display =
+            "none";
+
+        errorElement.style.display =
+            "none";
+
+
+        const response =
+            await fetch(
+                "/api/cognitive-plan",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Could not build cognitive plan."
+            );
+
+        }
+
+
+        /* ==========================================
+           ACTIVITY
+        ========================================== */
+
+        const activity =
+            data.recommended_activity;
+
+
+        const activityDisplay =
+            getActivityName(
+                activity
+            );
+
+
+        document.getElementById(
+            "journeyActivity"
+        ).textContent =
+            activityDisplay;
+
+
+        /* ==========================================
+           DIFFICULTY
+        ========================================== */
+
+        const recommendedDifficulty =
+            (
+                data.recommended_difficulty ||
+                "easy"
+            ).toLowerCase();
+
+
+        const difficultyDisplay =
+            capitalize(
+                recommendedDifficulty
+            );
+
+
+        document.getElementById(
+            "journeyDifficulty"
+        ).textContent =
+            `🎚️ Suggested difficulty: ${difficultyDisplay}`;
+
+
+        /* ==========================================
+           PERSONALIZATION
+        ========================================== */
+
+        const category =
+            data.personal_memory_category;
+
+
+        if (
+            data.personalization_available &&
+            category
+        ) {
+
+            const readableCategory =
+                category.replaceAll(
+                    "_",
+                    " "
+                );
+
+
+            document.getElementById(
+                "journeyPersonalization"
+            ).textContent =
+                `❤️ Personal content can use your ${readableCategory}.`;
+
+            status.textContent =
+                "AI PERSONALIZED";
+
+        }
+
+        else {
+
+            document.getElementById(
+                "journeyPersonalization"
+            ).textContent =
+                "🎮 This activity will use familiar cognitive content.";
+
+            status.textContent =
+                "PERSONALIZED";
+
+        }
+
+
+        /* ==========================================
+           REGION
+        ========================================== */
+
+        const region =
+            data.region;
+
+
+        if (region) {
+
+            document.getElementById(
+                "journeyRegion"
+            ).textContent =
+                `🌏 Region: ${capitalize(region)}`;
+
+        }
+
+        else {
+
+            document.getElementById(
+                "journeyRegion"
+            ).textContent =
+                "🌏 Region: Not set";
+
+        }
+
+
+        /* ==========================================
+           RECENT DATA
+        ========================================== */
+
+        document.getElementById(
+            "journeyAttempts"
+        ).textContent =
+            `📊 ${data.recent_result_count || 0} recent results analyzed`;
+
+
+        /* ==========================================
+           EXPLANATION
+        ========================================== */
+
+        document.getElementById(
+            "journeyExplanation"
+        ).textContent =
+            data.explanation ||
+            "The activity was selected from recent activity history.";
+
+
+        /* ==========================================
+           START BUTTON
+        ========================================== */
+
+        const activityRoutes = {
+
+            memory:
+                "/memory-game",
+
+            attention:
+                "/attention-game",
+
+            recall:
+                "/recall-game",
+
+            object_match:
+                "/object-match"
+
+        };
+
+
+        const route =
+            activityRoutes[
+                activity
+            ];
+
+
+        const journeyButton =
+            document.getElementById(
+                "journeyButton"
+            );
+
+
+        if (route) {
+
+            /*
+             * Pass the Cognitive Engine's
+             * recommendation into the activity.
+             *
+             * Example:
+             *
+             * /recall-game?difficulty=medium&journey=1
+             *
+             * The activity can now use the exact
+             * difficulty selected by the engine.
+             */
+
+            journeyButton.href =
+                route +
+                "?difficulty=" +
+                encodeURIComponent(
+                    recommendedDifficulty
+                ) +
+                "&journey=1";
+
+
+            journeyButton.textContent =
+                `Start ${getActivityNameWithoutEmoji(activity)} →`;
+
+        }
+
+        else {
+
+            journeyButton.href =
+                "/";
+
+            journeyButton.textContent =
+                "Return Home →";
+
+        }
+
+
+        loading.style.display =
+            "none";
+
+        content.style.display =
+            "grid";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Cognitive journey error:",
+            error
+        );
+
+
+        loading.style.display =
+            "none";
+
+        content.style.display =
+            "none";
+
+        errorElement.style.display =
+            "block";
+
+        status.textContent =
+            "JOURNEY UNAVAILABLE";
+
+    }
+
+}
+
+
+/* ==========================================
+   PATIENT PROFILE
+========================================== */
+
+async function loadPatientProfile() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/patient"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message
+            );
+
+        }
+
+
+        patientId =
+            data.patient.id;
+
+
+        document.getElementById(
+            "patientName"
+        ).textContent =
+            data.patient.name;
+
+
+        document.getElementById(
+            "patientAge"
+        ).textContent =
+            data.patient.age
+                ? `Age: ${data.patient.age}`
+                : "Age: Not provided";
+
+
+        document.getElementById(
+            "editName"
+        ).value =
+            data.patient.name;
+
+
+        document.getElementById(
+            "editAge"
+        ).value =
+            data.patient.age || "";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Patient error:",
+            error
+        );
+
+
+        document.getElementById(
+            "patientName"
+        ).textContent =
+            "Patient unavailable";
+
+    }
+
+}
+
+
+/* ==========================================
+   PROFILE EDIT
+========================================== */
+
+function showEditProfile() {
+
+    document.getElementById(
+        "profileEdit"
+    ).style.display =
+        "block";
+
+}
+
+
+function hideEditProfile() {
+
+    document.getElementById(
+        "profileEdit"
+    ).style.display =
+        "none";
+
+    clearProfileMessage();
+
+}
+
+
+function showProfileMessage(
+    message,
+    success = true
+) {
+
+    const element =
+        document.getElementById(
+            "profileMessage"
+        );
+
+
+    element.textContent =
+        message;
+
+
+    element.style.color =
+        success
+            ? "#15803d"
+            : "#b91c1c";
+
+}
+
+
+function clearProfileMessage() {
+
+    document.getElementById(
+        "profileMessage"
+    ).textContent =
+        "";
+
+}
+
+
+async function saveProfile() {
+
+    const name =
+        document.getElementById(
+            "editName"
+        ).value.trim();
+
+
+    const age =
+        document.getElementById(
+            "editAge"
+        ).value;
+
+
+    if (!name) {
+
+        showProfileMessage(
+            "Please enter the patient's name.",
+            false
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/patient",
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        name: name,
+
+                        age: age
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message
+            );
+
+        }
+
+
+        document.getElementById(
+            "patientName"
+        ).textContent =
+            data.patient.name;
+
+
+        document.getElementById(
+            "patientAge"
+        ).textContent =
+            data.patient.age
+                ? `Age: ${data.patient.age}`
+                : "Age: Not provided";
+
+
+        showProfileMessage(
+            "Profile updated successfully!"
+        );
+
+
+        setTimeout(
+            () => {
+
+                hideEditProfile();
+
+            },
+            800
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Profile update error:",
+            error
+        );
+
+
+        showProfileMessage(
+            "Could not update profile.",
+            false
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   LOAD COGNITIVE HISTORY
+========================================== */
+
+async function loadCognitiveHistory() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/cognitive-history",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message
+            );
+
+        }
+
+
+        /*
+         * Flask returns the data using
+         * the key "history".
+         */
+
+        cognitiveResults =
+            data.history || [];
+
+
+        /*
+         * Keep only results belonging to
+         * the current patient.
+         *
+         * Older records without patient_id
+         * are ignored.
+         */
+
+        if (patientId) {
+
+            cognitiveResults =
+                cognitiveResults.filter(
+                    result =>
+                        result.patient_id === patientId
+                );
+
+        }
+
+
+        updateSummary();
+
+        updateActivityOverview();
+
+        updateLongitudinalProgress();
+
+        updateChart();
+
+        updateHistory();
+
+        updateFeedback();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "History error:",
+            error
+        );
+
+
+        document.getElementById(
+            "history"
+        ).innerHTML = `
+            <div class="empty-state">
+                Could not load activity history.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   GET SCORE
+========================================== */
+
+function getScore(result) {
+
+    return Number(
+        result.memory_score || 0
+    );
+
+}
+
+
+/* ==========================================
+   ACTIVITY NAME
+========================================== */
+
+function getActivityName(
+    activityType
+) {
+
+    if (
+        activityType ===
+        "memory"
+    ) {
+
+        return "🧠 Memory Game";
+
+    }
+
+
+    if (
+        activityType ===
+        "attention"
+    ) {
+
+        return "🎯 Attention Activity";
+
+    }
+
+
+    if (
+        activityType ===
+        "recall"
+    ) {
+
+        return "📖 Daily Recall";
+
+    }
+
+
+    if (
+        activityType ===
+        "object_match"
+    ) {
+
+        return "🧩 Object Match";
+
+    }
+
+
+    return "🎮 Cognitive Activity";
+
+}
+
+
+function getActivityNameWithoutEmoji(
+    activityType
+) {
+
+    if (
+        activityType ===
+        "memory"
+    ) {
+
+        return "Memory Game";
+
+    }
+
+
+    if (
+        activityType ===
+        "attention"
+    ) {
+
+        return "Attention Activity";
+
+    }
+
+
+    if (
+        activityType ===
+        "recall"
+    ) {
+
+        return "Daily Recall";
+
+    }
+
+
+    if (
+        activityType ===
+        "object_match"
+    ) {
+
+        return "Object Match";
+
+    }
+
+
+    return "Cognitive Activity";
+
+}
+
+
+/* ==========================================
+   SUMMARY
+========================================== */
+
+function updateSummary() {
+
+    const results =
+        cognitiveResults;
+
+
+    document.getElementById(
+        "totalActivities"
+    ).textContent =
+        results.length;
+
+
+    if (
+        results.length === 0
+    ) {
+
+        document.getElementById(
+            "latestScore"
+        ).textContent =
+            "--";
+
+
+        document.getElementById(
+            "averageScore"
+        ).textContent =
+            "--";
+
+
+        document.getElementById(
+            "bestScore"
+        ).textContent =
+            "--";
+
+
+        return;
+
+    }
+
+
+    const scores =
+        results.map(
+            getScore
+        );
+
+
+    const latest =
+        scores[0];
+
+
+    const average =
+        scores.reduce(
+            (
+                sum,
+                score
+            ) =>
+                sum + score,
+            0
+        ) /
+        scores.length;
+
+
+    const best =
+        Math.max(
+            ...scores
+        );
+
+
+    document.getElementById(
+        "latestScore"
+    ).textContent =
+        `${Math.round(latest)}%`;
+
+
+    document.getElementById(
+        "averageScore"
+    ).textContent =
+        `${Math.round(average)}%`;
+
+
+    document.getElementById(
+        "bestScore"
+    ).textContent =
+        `${Math.round(best)}%`;
+
+}
+
+
+/* ==========================================
+   ACTIVITY OVERVIEW
+========================================== */
+
+function updateActivityOverview() {
+
+    const memoryResults =
+        cognitiveResults.filter(
+            result =>
+                result.activity_type ===
+                "memory"
+        );
+
+
+    const attentionResults =
+        cognitiveResults.filter(
+            result =>
+                result.activity_type ===
+                "attention"
+        );
+
+
+    const recallResults =
+        cognitiveResults.filter(
+            result =>
+                result.activity_type ===
+                "recall"
+        );
+
+
+    const objectResults =
+        cognitiveResults.filter(
+            result =>
+                result.activity_type ===
+                "object_match"
+        );
+
+
+    updateActivityCard(
+        memoryResults,
+        "memoryAverage",
+        "memoryDetails",
+        "Memory Game"
+    );
+
+
+    updateActivityCard(
+        attentionResults,
+        "attentionAverage",
+        "attentionDetails",
+        "Attention Activity"
+    );
+
+
+    updateActivityCard(
+        recallResults,
+        "recallAverage",
+        "recallDetails",
+        "Daily Recall"
+    );
+
+
+    updateActivityCard(
+        objectResults,
+        "objectAverage",
+        "objectDetails",
+        "Object Match"
+    );
+
+}
+
+
+function updateActivityCard(
+    results,
+    scoreElementId,
+    detailsElementId,
+    activityName
+) {
+
+    const scoreElement =
+        document.getElementById(
+            scoreElementId
+        );
+
+
+    const detailsElement =
+        document.getElementById(
+            detailsElementId
+        );
+
+
+    if (
+        results.length === 0
+    ) {
+
+        scoreElement.textContent =
+            "No attempts yet";
+
+
+        detailsElement.textContent =
+            `Complete ${activityName} to begin tracking.`;
+
+
+        return;
+
+    }
+
+
+    const scores =
+        results.map(
+            getScore
+        );
+
+
+    const average =
+        scores.reduce(
+            (
+                sum,
+                score
+            ) =>
+                sum + score,
+            0
+        ) /
+        scores.length;
+
+
+    const best =
+        Math.max(
+            ...scores
+        );
+
+
+    scoreElement.textContent =
+        `${Math.round(average)}%`;
+
+
+    detailsElement.textContent =
+        `${results.length} attempt${results.length === 1 ? "" : "s"} • Best: ${Math.round(best)}%`;
+
+}
+
+
+/* ==========================================
+   LONGITUDINAL PROGRESS
+========================================== */
+
+function updateLongitudinalProgress() {
+
+    const results =
+        cognitiveResults;
+
+
+    if (
+        results.length === 0
+    ) {
+
+        document.getElementById(
+            "improvementValue"
+        ).textContent =
+            "--";
+
+
+        document.getElementById(
+            "recentAverage"
+        ).textContent =
+            "--";
+
+
+        document.getElementById(
+            "consistencyValue"
+        ).textContent =
+            "--";
+
+
+        return;
+
+    }
+
+
+    if (
+        results.length === 1
+    ) {
+
+        document.getElementById(
+            "improvementValue"
+        ).textContent =
+            "--";
+
+
+        document.getElementById(
+            "recentAverage"
+        ).textContent =
+            `${Math.round(
+                getScore(
+                    results[0]
+                )
+            )}%`;
+
+
+        document.getElementById(
+            "consistencyValue"
+        ).textContent =
+            getScore(
+                results[0]
+            ) >= 60
+                ? "100%"
+                : "0%";
+
+
+        return;
+
+    }
+
+
+    /*
+     * Results are ordered newest first.
+     *
+     * Reverse them to create chronological
+     * order from oldest to newest.
+     */
+
+    const chronological =
+        [
+            ...results
+        ].reverse();
+
+
+    const midpoint =
+        Math.floor(
+            chronological.length / 2
+        );
+
+
+    const earlier =
+        chronological.slice(
+            0,
+            midpoint
+        );
+
+
+    const recent =
+        chronological.slice(
+            midpoint
+        );
+
+
+    const earlierAverage =
+        averageScore(
+            earlier
+        );
+
+
+    const recentAverageValue =
+        averageScore(
+            recent
+        );
+
+
+    let improvement = 0;
+
+
+    if (
+        earlierAverage > 0
+    ) {
+
+        improvement =
+            (
+                (
+                    recentAverageValue -
+                    earlierAverage
+                ) /
+                earlierAverage
+            ) *
+            100;
+
+    }
+
+
+    const roundedImprovement =
+        Math.round(
+            improvement
+        );
+
+
+    document.getElementById(
+        "improvementValue"
+    ).textContent =
+        roundedImprovement > 0
+            ? `+${roundedImprovement}%`
+            : `${roundedImprovement}%`;
+
+
+    document.getElementById(
+        "recentAverage"
+    ).textContent =
+        `${Math.round(
+            recentAverageValue
+        )}%`;
+
+
+    const consistentSessions =
+        results.filter(
+            result =>
+                getScore(
+                    result
+                ) >= 60
+        ).length;
+
+
+    const consistency =
+        Math.round(
+            (
+                consistentSessions /
+                results.length
+            ) *
+            100
+        );
+
+
+    document.getElementById(
+        "consistencyValue"
+    ).textContent =
+        `${consistency}%`;
+
+}
+
+
+function averageScore(
+    results
+) {
+
+    if (
+        results.length === 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    const total =
+        results.reduce(
+            (
+                sum,
+                result
+            ) =>
+                sum +
+                getScore(
+                    result
+                ),
+            0
+        );
+
+
+    return total /
+        results.length;
+
+}
+
+
+/* ==========================================
+   CHART
+========================================== */
+
+function updateChart() {
+
+    const chart =
+        document.getElementById(
+            "chart"
+        );
+
+
+    if (
+        cognitiveResults.length === 0
+    ) {
+
+        chart.innerHTML = `
+            <div class="empty-state">
+                Complete activities to see your progress.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const chronological =
+        [
+            ...cognitiveResults
+        ].reverse();
+
+
+    chart.innerHTML =
+        "";
+
+
+    chronological.forEach(
+        (
+            result
+        ) => {
+
+            const wrapper =
+                document.createElement(
+                    "div"
+                );
+
+
+            wrapper.className =
+                "bar-wrapper";
+
+
+            const score =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        getScore(
+                            result
+                        )
+                    )
+                );
+
+
+            const scoreLabel =
+                document.createElement(
+                    "div"
+                );
+
+
+            scoreLabel.className =
+                "bar-score";
+
+
+            scoreLabel.textContent =
+                `${Math.round(
+                    score
+                )}%`;
+
+
+            const bar =
+                document.createElement(
+                    "div"
+                );
+
+
+            bar.className =
+                "bar " +
+                getBarClass(
+                    result.activity_type
+                );
+
+
+            bar.style.height =
+                `${Math.max(
+                    score,
+                    5
+                )}%`;
+
+
+            const label =
+                document.createElement(
+                    "div"
+                );
+
+
+            label.className =
+                "bar-label";
+
+
+            label.textContent =
+                getActivityEmoji(
+                    result.activity_type
+                );
+
+
+            wrapper.appendChild(
+                scoreLabel
+            );
+
+
+            wrapper.appendChild(
+                bar
+            );
+
+
+            wrapper.appendChild(
+                label
+            );
+
+
+            chart.appendChild(
+                wrapper
+            );
+
+        }
+    );
+
+}
+
+
+function getBarClass(
+    activityType
+) {
+
+    if (
+        activityType ===
+        "memory"
+    ) {
+
+        return "memory-bar";
+
+    }
+
+
+    if (
+        activityType ===
+        "attention"
+    ) {
+
+        return "attention-bar";
+
+    }
+
+
+    if (
+        activityType ===
+        "recall"
+    ) {
+
+        return "recall-bar";
+
+    }
+
+
+    if (
+        activityType ===
+        "object_match"
+    ) {
+
+        return "object-bar";
+
+    }
+
+
+    return "memory-bar";
+
+}
+
+
+function getActivityEmoji(
+    activityType
+) {
+
+    if (
+        activityType ===
+        "memory"
+    ) {
+
+        return "🧠";
+
+    }
+
+
+    if (
+        activityType ===
+        "attention"
+    ) {
+
+        return "🎯";
+
+    }
+
+
+    if (
+        activityType ===
+        "recall"
+    ) {
+
+        return "📖";
+
+    }
+
+
+    if (
+        activityType ===
+        "object_match"
+    ) {
+
+        return "🧩";
+
+    }
+
+
+    return "🎮";
+
+}
+
+
+/* ==========================================
+   HISTORY
+========================================== */
+
+function updateHistory() {
+
+    const history =
+        document.getElementById(
+            "history"
+        );
+
+
+    if (
+        cognitiveResults.length === 0
+    ) {
+
+        history.innerHTML = `
+            <div class="empty-state">
+                No activities completed yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    history.innerHTML =
+        "";
+
+
+    cognitiveResults
+        .slice(
+            0,
+            10
+        )
+        .forEach(
+            result => {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "history-item";
+
+
+                const title =
+                    getActivityName(
+                        result.activity_type
+                    );
+
+
+                const difficulty =
+                    capitalize(
+                        result.difficulty ||
+                        "easy"
+                    );
+
+
+                const date =
+                    formatDate(
+                        result.timestamp
+                    );
+
+
+                item.innerHTML = `
+
+                    <div>
+
+                        <div class="history-title">
+                            ${title}
+                        </div>
+
+                        <div class="history-date">
+                            ${difficulty} • ${date}
+                        </div>
+
+                    </div>
+
+                    <div class="history-score">
+                        ${Math.round(
+                            getScore(
+                                result
+                            )
+                        )}%
+                    </div>
+
+                `;
+
+
+                history.appendChild(
+                    item
+                );
+
+            }
+        );
+
+}
+
+
+/* ==========================================
+   FEEDBACK
+========================================== */
+
+function updateFeedback() {
+
+    const feedback =
+        document.getElementById(
+            "feedback"
+        );
+
+
+    if (
+        cognitiveResults.length === 0
+    ) {
+
+        feedback.textContent =
+            "Complete an activity to receive progress feedback.";
+
+        return;
+
+    }
+
+
+    const latest =
+        cognitiveResults[0];
+
+
+    const latestScore =
+        getScore(
+            latest
+        );
+
+
+    const activityName =
+        getActivityName(
+            latest.activity_type
+        );
+
+
+    if (
+        latestScore >= 85
+    ) {
+
+        feedback.textContent =
+            `Excellent work on your latest ${activityName}! Your performance was very strong. Keep enjoying your activities.`;
+
+    }
+
+    else if (
+        latestScore >= 60
+    ) {
+
+        feedback.textContent =
+            `Good effort on your latest ${activityName}. Keep practising regularly to build consistency.`;
+
+    }
+
+    else {
+
+        feedback.textContent =
+            `Keep going with your ${activityName}. Take your time and practise comfortably.`;
+
+    }
+
+}
+
+
+/* ==========================================
+   HELPERS
+========================================== */
+
+function capitalize(
+    text
+) {
+
+    if (!text) {
+
+        return "";
+
+    }
+
+
+    return text.charAt(0).toUpperCase() +
+        text.slice(1);
+
+}
+
+
+function formatDate(
+    timestamp
+) {
+
+    if (!timestamp) {
+
+        return "Unknown date";
+
+    }
+
+
+    const date =
+        new Date(
+            timestamp
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return timestamp;
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+async function initializeDashboard() {
+
+    /*
+     * Load patient first so patientId is available
+     * before filtering cognitive history.
+     */
+
+    await loadPatientProfile();
+
+
+    /*
+     * Load history for progress tracking.
+     */
+
+    await loadCognitiveHistory();
+
+
+    /*
+     * Ask the Personal Cognitive Engine
+     * what activity should come next.
+     */
+
+    await loadCognitiveJourney();
+
+}
+
+
+initializeDashboard();
+
+/* ==========================================
+   READ PERFORMANCE ANALYSIS OUT LOUD
+========================================== */
+/* ==========================================
+   READ DETAILED PERFORMANCE ANALYSIS OUT LOUD
+========================================== */
+function speakProgressFeedback() {
+    const totalElem = document.getElementById("totalActivities");
+    const avgElem = document.getElementById("averageScore");
+    const bestElem = document.getElementById("bestScore");
+    const latestElem = document.getElementById("latestScore");
+    const feedbackElem = document.getElementById("feedback");
+
+    const total = totalElem ? totalElem.textContent.trim() : "0";
+    const avg = avgElem ? avgElem.textContent.trim() : "--";
+    const best = bestElem ? bestElem.textContent.trim() : "--";
+    const latest = latestElem ? latestElem.textContent.trim() : "--";
+    const specificFeedback = feedbackElem ? feedbackElem.textContent.trim() : "";
+
+    const currentLang = localStorage.getItem("smritiCareLanguage") || "english";
+
+    // Build a richer, detailed analysis summary for the patient
+    let detailedAnalysis = "";
+    if (currentLang === "hindi") {
+        detailedAnalysis = `आपकी प्रगति का विवरण इस प्रकार है। आपने कुल ${total} गतिविधियां पूरी कर ली हैं। आपका औसत स्कोर ${avg} प्रतिशत है, सबसे अच्छा स्कोर ${best} प्रतिशत है, और आपका हालिया स्कोर ${latest} प्रतिशत रहा। ${specificFeedback}`;
+    } else {
+        detailedAnalysis = `Here is a summary of your performance progress. You have completed a total of ${total} activities. Your overall average score is ${avg}, your best score is ${best}, and your latest score is ${latest}. ${specificFeedback}`;
+    }
+
+    // Clean out emojis so TTS never speaks symbol names out loud
+    const cleanText = detailedAnalysis
+        .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (!cleanText || cleanText.includes("Complete an activity")) {
+        alert("No progress data available to read yet.");
+        return;
+    }
+
+    if (!("speechSynthesis" in window)) {
+        alert("Speech synthesis is not supported in this browser.");
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(cleanText);
+    speech.lang = (currentLang === "hindi") ? "hi-IN" : "en-IN";
+    speech.rate = 0.84;
+    speech.pitch = 1;
+
+    // Strict voice priority matching Google US English preference
+    const voices = window.speechSynthesis.getVoices();
+    if (currentLang === "english") {
+        const preferredVoice =
+            voices.find(v => v.name === "Google US English" && v.lang === "en-US") ||
+            voices.find(v => v.name === "Isha" && v.lang === "en-IN") ||
+            voices.find(v => v.name === "Samantha" && v.lang === "en-US");
+
+        if (preferredVoice) speech.voice = preferredVoice;
+    } else {
+        const langCode = speech.lang.toLowerCase().split("-")[0];
+        const match = voices.find(v => v.lang.toLowerCase().startsWith(langCode));
+        if (match) speech.voice = match;
+    }
+
+    window.speechSynthesis.speak(speech);
+}
+
+</script>
+
+</body>
+
+</html>

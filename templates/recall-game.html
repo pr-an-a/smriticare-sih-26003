@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Daily Recall - SmritiCare</title>
+
+    <style>
+        :root {
+            --bg-canvas: #fbf9f6;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-regular: #334155;
+            --text-muted: #475569;
+            --text-soft: #64748b;
+
+            /* Recall Theme Tokens */
+            --recall-bg: #edf6f0;
+            --recall-border: #cbe6d5;
+            --recall-text: #266341;
+            --recall-primary: #3b8265;
+            --recall-hover: #2f6b53;
+
+            --border-subtle: #eae6df;
+            --shadow-subtle: 0 4px 18px rgba(30, 41, 59, 0.05);
+            --shadow-hover: 0 6px 20px rgba(30, 41, 59, 0.08);
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 16px 24px;
+            box-shadow: var(--shadow-subtle);
+            margin-bottom: 24px;
+        }
+
+        .back-button {
+            text-decoration: none;
+            color: var(--text-regular);
+            font-size: 15px;
+            font-weight: 700;
+            background: #ffffff;
+            border: 1px solid var(--border-subtle);
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #f8faf9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 6px;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-badge {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 20px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            background: var(--recall-bg);
+            border: 1px solid var(--recall-border);
+            color: var(--recall-text);
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .personalized-badge {
+            display: none;
+            width: fit-content;
+            margin: -10px auto 20px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            background: #f5effb;
+            border: 1px solid #ded2f5;
+            color: #593f87;
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .engine-badge {
+            display: none;
+            width: fit-content;
+            margin: -10px auto 20px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            background: var(--recall-bg);
+            border: 1px solid var(--recall-border);
+            color: var(--recall-text);
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 36px 30px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .story-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .story {
+            background: var(--recall-bg);
+            border: 1px solid var(--recall-border);
+            border-radius: var(--radius-md);
+            padding: 24px 26px;
+            font-size: 20px;
+            line-height: 1.7;
+            color: var(--recall-text);
+            margin-bottom: 24px;
+        }
+
+        .listen-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            background: #ffffff;
+            color: var(--text-regular);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .listen-button:hover {
+            background: #faf8f5;
+            border-color: #cbd5e1;
+        }
+
+        .question-number {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--recall-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .option-button {
+            padding: 18px;
+            border: 1.5px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            background: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-regular);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            min-height: 64px;
+        }
+
+        .option-button:hover {
+            background: #faf8f5;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .option-button.correct {
+            border-color: #2d6a5f;
+            background: var(--recall-bg);
+            color: var(--recall-text);
+            font-weight: 700;
+        }
+
+        .option-button.incorrect {
+            border-color: #fecdd3;
+            background: #fff1f2;
+            color: #b42318;
+        }
+
+        .option-button:disabled {
+            cursor: default;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .answer-input {
+            flex: 1;
+            padding: 16px 18px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .answer-input:focus {
+            border-color: var(--recall-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 101, 0.12);
+        }
+
+        .voice-answer-btn {
+            padding: 12px 18px;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--recall-text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .voice-answer-btn:hover {
+            background: var(--recall-bg);
+            border-color: var(--recall-border);
+        }
+
+        .submit-answer-button {
+            display: block;
+            margin: 0 auto;
+            padding: 14px 30px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--recall-primary);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 50px;
+            transition: all 0.2s ease;
+        }
+
+        .submit-answer-button:hover {
+            background: var(--recall-hover);
+        }
+
+        .submit-answer-button:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .personalized-feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .personalized-feedback.correct {
+            background: var(--recall-bg);
+            color: var(--recall-text);
+            border: 1px solid var(--recall-border);
+        }
+
+        .personalized-feedback.incorrect {
+            background: #fff5eb;
+            color: #8c4e20;
+            border: 1px solid #f8dbc2;
+        }
+
+        .next-button,
+        .start-button,
+        .play-again-button {
+            display: block;
+            margin: 24px auto 0;
+            padding: 14px 30px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--recall-primary);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 50px;
+            box-shadow: 0 4px 14px rgba(59, 130, 101, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .next-button:hover,
+        .start-button:hover,
+        .play-again-button:hover {
+            background: var(--recall-hover);
+            transform: translateY(-2px);
+        }
+
+        .result {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 54px;
+            font-weight: 800;
+            color: var(--recall-text);
+            margin: 16px 0;
+            line-height: 1;
+        }
+
+        .feedback {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-regular);
+            margin-bottom: 20px;
+        }
+
+        .adaptation-message {
+            margin: 20px auto;
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            background: var(--recall-bg);
+            border: 1px solid var(--recall-border);
+            color: var(--recall-text);
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 620px;
+            font-weight: 600;
+        }
+
+        .personalization-note {
+            margin: 20px auto;
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            background: #f5effb;
+            border: 1px solid #ded2f5;
+            color: #593f87;
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 620px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .stat {
+            background: #faf8f5;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--text-soft);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .save-message {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--recall-text);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .loading-message {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 650px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- DIRECT HOME BUTTON -->
+    <div class="top-bar">
+        <button class="back-button" onclick="goToHome()">
+            ← Home
+        </button>
+        <div style="font-weight:700; color:var(--recall-text);">
+            📖 Daily Recall
+        </div>
+    </div>
+
+    <h1 class="title">
+        📖 Daily Recall
+    </h1>
+
+    <p class="subtitle">
+        Remember familiar things and everyday details.
+    </p>
+
+    <div id="difficultyBadge" class="difficulty-badge">
+        Easy
+    </div>
+
+    <div id="personalizedBadge" class="personalized-badge">
+        💜 Personalized for you
+    </div>
+
+    <div id="engineBadge" class="engine-badge">
+        🌱 Selected by your Cognitive Journey
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="startScreen" class="card">
+        <h2 class="story-title">How this activity works</h2>
+        <p style="font-size: 17px; line-height: 1.65; color: var(--text-muted); text-align: center;">
+            You will remember a few simple details and answer questions about them.
+        </p>
+        <p style="font-size: 16px; line-height: 1.65; color: var(--text-soft); text-align: center;">
+            SmritiCare may also use familiar information about you to create a more personal recall question.
+        </p>
+
+        <button class="start-button" onclick="startGame()">Start Activity</button>
+        <div id="loadingMessage" class="loading-message hidden">Preparing your personalized activity...</div>
+    </div>
+
+    <!-- STORY SCREEN -->
+    <div id="storyScreen" class="card hidden">
+        <h2 class="story-title">Remember this story</h2>
+        <div id="storyText" class="story"></div>
+        <button class="listen-button" onclick="readStory()">🔊 Read Story Aloud</button>
+        <button class="next-button" onclick="showQuestions()">I Remember It →</button>
+    </div>
+
+    <!-- NORMAL QUESTION SCREEN -->
+    <div id="questionScreen" class="card hidden">
+        <div id="questionNumber" class="question-number">Question 1</div>
+        <div id="questionText" class="question"></div>
+        <div id="options" class="options"></div>
+        <button id="nextQuestionButton" class="next-button hidden" onclick="nextQuestion()">Next Question →</button>
+    </div>
+
+    <!-- PERSONALIZED QUESTION SCREEN -->
+    <div id="personalizedQuestionScreen" class="card hidden">
+        <div class="question-number">A question especially for you</div>
+        <div id="personalizedQuestionText" class="question"></div>
+
+        <div class="input-group">
+            <input
+                id="personalizedAnswer"
+                class="answer-input"
+                type="text"
+                placeholder="Type your answer here..."
+                autocomplete="off"
+            >
+            <button 
+                type="button" 
+                class="voice-answer-btn" 
+                id="recallVoiceAnswerBtn"
+                onclick="recordPersonalizedAnswerVoice()"
+            >
+                🎙️ Speak Answer
+            </button>
+        </div>
+
+        <button id="submitPersonalizedButton" class="submit-answer-button" onclick="submitPersonalizedAnswer()">
+            Check Answer
+        </button>
+
+        <div id="personalizedFeedback" class="personalized-feedback hidden"></div>
+        <button id="personalizedNextButton" class="next-button hidden" onclick="finishPersonalizedGame()">
+            Finish Activity →
+        </button>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="resultScreen" class="card result hidden">
+        <h2 class="story-title">Activity Complete 🎉</h2>
+        <div id="scoreDisplay" class="score">0%</div>
+        <div id="feedback" class="feedback"></div>
+        <div id="adaptationMessage" class="adaptation-message"></div>
+        <div id="personalizationNote" class="personalization-note hidden">
+            💜 This activity included a question created from your personal memory profile.
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span id="correctStat" class="stat-value">0</span>
+                <span class="stat-label">Correct</span>
+            </div>
+            <div class="stat">
+                <span id="incorrectStat" class="stat-value">0</span>
+                <span class="stat-label">Incorrect</span>
+            </div>
+            <div class="stat">
+                <span id="timeStat" class="stat-value">0s</span>
+                <span class="stat-label">Time</span>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px;">
+            <button class="play-again-button" onclick="playAgain()">Play Again</button>
+            <button class="back-button" onclick="goToHome()" style="padding:14px 28px;">← Return Home</button>
+        </div>
+
+        <div id="saveMessage" class="save-message">Saving your result...</div>
+    </div>
+
+</div>
+
+<script>
+    function goToHome() {
+        if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+        }
+        window.location.href = "/";
+    }
+
+    const stories = {
+        easy: {
+            text: "In the morning, Meena had breakfast. After breakfast, she took her medicine. Then she watered the plants. Later, she sat outside and drank a cup of tea.",
+            questions: [
+                { question: "What did Meena do after breakfast?", options: ["She took her medicine", "She went shopping", "She cooked lunch", "She went for a walk"], answer: 0 },
+                { question: "What did Meena water?", options: ["The garden gate", "The plants", "The car", "The kitchen"], answer: 1 },
+                { question: "What did Meena drink later?", options: ["Milk", "Juice", "Tea", "Water"], answer: 2 }
+            ]
+        },
+        medium: {
+            text: "On Saturday morning, Ravi woke up early. He brushed his teeth and had breakfast. After breakfast, he took his medicine and called his daughter. Later, he went to the market and bought vegetables. When he returned home, he kept the vegetables in the kitchen.",
+            questions: [
+                { question: "Who did Ravi call after taking his medicine?", options: ["His brother", "His daughter", "His friend", "His doctor"], answer: 1 },
+                { question: "Where did Ravi go later?", options: ["The park", "The hospital", "The market", "The bank"], answer: 2 },
+                { question: "What did Ravi buy?", options: ["Books", "Vegetables", "Clothes", "Fruit juice"], answer: 1 },
+                { question: "Where did Ravi keep the vegetables?", options: ["The bedroom", "The balcony", "The kitchen", "The garden"], answer: 2 }
+            ]
+        },
+        hard: {
+            text: "On Monday morning, Lakshmi woke up at seven o'clock. She opened the windows and watered the flowers. After having breakfast, she took her medicine and wrote a shopping list. Her son visited her before lunch and brought some bananas. In the afternoon, Lakshmi went to the market, bought rice and vegetables, and returned home before four o'clock. She put the groceries away and called her sister in the evening.",
+            questions: [
+                { question: "What did Lakshmi do before breakfast?", options: ["Called her sister", "Watered the flowers", "Went to the market", "Ate bananas"], answer: 1 },
+                { question: "What did Lakshmi write after taking her medicine?", options: ["A letter", "A diary", "A shopping list", "A phone number"], answer: 2 },
+                { question: "Who visited Lakshmi before lunch?", options: ["Her daughter", "Her sister", "Her son", "Her neighbour"], answer: 2 },
+                { question: "What did her son bring?", options: ["Apples", "Bananas", "Rice", "Flowers"], answer: 1 },
+                { question: "What did Lakshmi buy at the market?", options: ["Rice and vegetables", "Milk and bread", "Books and flowers", "Tea and biscuits"], answer: 0 },
+                { question: "Who did Lakshmi call in the evening?", options: ["Her doctor", "Her sister", "Her son", "Her neighbour"], answer: 1 }
+            ]
+        }
+    };
+
+    let difficulty = localStorage.getItem("recallDifficulty") || "easy";
+    let engineDifficulty = null;
+    let engineRecommendationActive = false;
+    let currentStory;
+    let currentQuestionIndex = 0;
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+    let startTime = 0;
+    let totalResponseTime = 0;
+
+    let personalizedMode = false;
+    let personalizedQuestion = "";
+    let personalizedCorrectAnswer = "";
+    let personalizedMemorySource = "";
+    let personalizedAnswered = false;
+
+    const currentLanguage = localStorage.getItem("smritiCareLanguage") || "english";
+
+    function getJourneyDifficultyFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const req = params.get("difficulty");
+        return (req === "easy" || req === "medium" || req === "hard") ? req : null;
+    }
+
+    async function loadCognitiveEnginePlan() {
+        try {
+            const response = await fetch("/api/cognitive-plan", { cache: "no-store" });
+            const data = await response.json();
+            if (data.success && data.recommended_activity === "recall") {
+                engineRecommendationActive = true;
+                difficulty = data.recommended_difficulty || "easy";
+                localStorage.setItem("recallDifficulty", difficulty);
+                document.getElementById("engineBadge").style.display = "block";
+                return true;
+            }
+        } catch (e) {}
+        return false;
+    }
+
+    function updateDifficultyBadge() {
+        const badge = document.getElementById("difficultyBadge");
+        badge.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+    }
+
+    function speakText(text) {
+        if (!text || !("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = (currentLanguage === "hindi") ? "hi-IN" : "en-IN";
+        speech.rate = 0.84;
+        window.speechSynthesis.speak(speech);
+    }
+
+    function recordPersonalizedAnswerVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const input = document.getElementById("personalizedAnswer");
+        const btn = document.getElementById("recallVoiceAnswerBtn");
+        if (!SpeechRecognition || !input) return;
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = (currentLanguage === "hindi") ? "hi-IN" : "en-IN";
+
+        btn.textContent = "🎙️ Listening...";
+        btn.style.background = "#edf6f0";
+
+        recognition.onresult = function(e) {
+            input.value = e.results[0][0].transcript.trim();
+            btn.textContent = "🎙️ Speak Answer";
+            btn.style.background = "#ffffff";
+        };
+
+        recognition.onerror = function() {
+            btn.textContent = "🎙️ Speak Answer";
+            btn.style.background = "#ffffff";
+        };
+
+        recognition.start();
+    }
+
+    async function startGame() {
+        currentQuestionIndex = 0;
+        correctAnswers = 0;
+        incorrectAnswers = 0;
+        totalResponseTime = 0;
+        personalizedMode = false;
+
+        document.getElementById("startScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.add("hidden");
+        document.getElementById("questionScreen").classList.add("hidden");
+        document.getElementById("storyScreen").classList.add("hidden");
+        document.getElementById("personalizedQuestionScreen").classList.add("hidden");
+        document.getElementById("personalizedBadge").style.display = "none";
+
+        const answerInput = document.getElementById("personalizedAnswer");
+        answerInput.value = "";
+        answerInput.disabled = false;
+
+        const submitBtn = document.getElementById("submitPersonalizedButton");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Check Answer";
+        submitBtn.onclick = submitPersonalizedAnswer;
+
+        document.getElementById("personalizedFeedback").className = "personalized-feedback hidden";
+        document.getElementById("personalizedNextButton").classList.add("hidden");
+        document.getElementById("loadingMessage").classList.remove("hidden");
+
+        try {
+            const response = await fetch("/api/personalized-prompt?round=" + Date.now(), { cache: "no-store" });
+            const data = await response.json();
+            document.getElementById("loadingMessage").classList.add("hidden");
+
+            if (response.ok && data.success && data.question && data.answer) {
+                personalizedMode = true;
+                personalizedQuestion = data.question;
+                personalizedCorrectAnswer = data.answer;
+                personalizedMemorySource = data.memory_source || "";
+
+                document.getElementById("personalizedBadge").style.display = "block";
+                document.getElementById("personalizedQuestionScreen").classList.remove("hidden");
+                document.getElementById("personalizedQuestionText").textContent = personalizedQuestion;
+
+                startTime = Date.now();
+                speakText(personalizedQuestion);
+                return;
+            }
+        } catch (e) {}
+
+        document.getElementById("loadingMessage").classList.add("hidden");
+        currentStory = stories[difficulty] || stories.easy;
+        document.getElementById("storyScreen").classList.remove("hidden");
+        document.getElementById("storyText").textContent = currentStory.text;
+
+        readStory();
+    }
+
+    function readStory() {
+        if (!currentStory) return;
+        speakText(currentStory.text);
+    }
+
+    function showQuestions() {
+        window.speechSynthesis.cancel();
+        document.getElementById("storyScreen").classList.add("hidden");
+        document.getElementById("questionScreen").classList.remove("hidden");
+        startTime = Date.now();
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = currentStory.questions[currentQuestionIndex];
+        document.getElementById("questionNumber").textContent = "Question " + (currentQuestionIndex + 1) + " of " + currentStory.questions.length;
+        document.getElementById("questionText").textContent = q.question;
+
+        speakText(q.question);
+
+        const container = document.getElementById("options");
+        container.innerHTML = "";
+        document.getElementById("nextQuestionButton").classList.add("hidden");
+
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement("button");
+            btn.className = "option-button";
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(idx, q.answer, btn);
+            container.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected, correct, btn) {
+        totalResponseTime += (Date.now() - startTime) / 1000;
+        document.querySelectorAll(".option-button").forEach(b => b.disabled = true);
+
+        if (selected === correct) {
+            correctAnswers++;
+            btn.classList.add("correct");
+        } else {
+            incorrectAnswers++;
+            btn.classList.add("incorrect");
+            document.querySelectorAll(".option-button")[correct].classList.add("correct");
+        }
+
+        document.getElementById("nextQuestionButton").classList.remove("hidden");
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= currentStory.questions.length) {
+            finishGame();
+        } else {
+            startTime = Date.now();
+            showQuestion();
+        }
+    }
+
+    async function submitPersonalizedAnswer() {
+        const input = document.getElementById("personalizedAnswer");
+        const submitBtn = document.getElementById("submitPersonalizedButton");
+        const feedback = document.getElementById("personalizedFeedback");
+        const val = input.value.trim();
+
+        if (!val) {
+            feedback.className = "personalized-feedback incorrect";
+            feedback.innerText = "💬 Please tell me what you remember.";
+            return;
+        }
+
+        input.disabled = true;
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Checking...";
+        feedback.className = "personalized-feedback";
+        feedback.innerText = "🤔 Let's see what you remember...";
+
+        try {
+            const response = await fetch("/api/evaluate-personalized-answer", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    question: personalizedQuestion,
+                    expected_answer: personalizedCorrectAnswer,
+                    patient_answer: val,
+                    memory_source: personalizedMemorySource
+                })
+            });
+            const data = await response.json();
+            const evaluation = data.result;
+
+            if (evaluation === "correct") {
+                correctAnswers = 1;
+                feedback.className = "personalized-feedback correct";
+                feedback.innerText = "🌟 Wonderful! You remembered that!";
+                speakText("Wonderful! You remembered that!");
+            } else {
+                correctAnswers = 0;
+                feedback.className = "personalized-feedback incorrect";
+                feedback.innerText = "🌱 That's okay. Let's try another memory.";
+                speakText("That's okay. Let's try another memory.");
+            }
+            document.getElementById("personalizedNextButton").classList.remove("hidden");
+        } catch (e) {
+            input.disabled = false;
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Check Answer";
+            feedback.innerText = "Could not check answer. Please try again.";
+        }
+    }
+
+    function finishPersonalizedGame() {
+        const score = correctAnswers === 1 ? 100 : 0;
+        document.getElementById("personalizedQuestionScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.remove("hidden");
+        document.getElementById("scoreDisplay").textContent = score + "%";
+        document.getElementById("correctStat").textContent = correctAnswers;
+        document.getElementById("incorrectStat").textContent = 1 - correctAnswers;
+        document.getElementById("timeStat").textContent = ((Date.now() - startTime) / 1000).toFixed(1) + "s";
+        document.getElementById("feedback").textContent = score === 100 ? "Excellent personal recall! 🌟" : "Nice effort! Keep practising.";
+        saveResult(score, (Date.now() - startTime) / 1000, difficulty);
+    }
+
+    function finishGame() {
+        const total = currentStory.questions.length;
+        const score = Math.round((correctAnswers / total) * 100);
+        document.getElementById("questionScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.remove("hidden");
+        document.getElementById("scoreDisplay").textContent = score + "%";
+        document.getElementById("correctStat").textContent = correctAnswers;
+        document.getElementById("incorrectStat").textContent = incorrectAnswers;
+        document.getElementById("timeStat").textContent = totalResponseTime.toFixed(1) + "s";
+        document.getElementById("feedback").textContent = score >= 60 ? "Good job! You remembered many details." : "Nice effort! Keep practising.";
+        saveResult(score, totalResponseTime / total, difficulty);
+    }
+
+    async function saveResult(score, avgTime, diff) {
+        try {
+            await fetch("/api/save-result", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    activity_type: "recall",
+                    difficulty: diff,
+                    objects_shown: personalizedMode ? 1 : currentStory.questions.length,
+                    correct_answers: correctAnswers,
+                    incorrect_answers: incorrectAnswers,
+                    missed_answers: 0,
+                    response_time: Number(avgTime.toFixed(2)),
+                    memory_score: score
+                })
+            });
+            document.getElementById("saveMessage").textContent = "✓ Your result has been saved.";
+        } catch (e) {
+            document.getElementById("saveMessage").textContent = "Could not save result.";
+        }
+    }
+
+    function playAgain() {
+        document.getElementById("resultScreen").classList.add("hidden");
+        startGame();
+    }
+
+    async function initializeRecall() {
+        const urlDiff = getJourneyDifficultyFromURL();
+        if (urlDiff) {
+            difficulty = urlDiff;
+            localStorage.setItem("recallDifficulty", difficulty);
+        } else {
+            await loadCognitiveEnginePlan();
+        }
+        updateDifficultyBadge();
+    }
+
+    initializeRecall();
+</script>
+
+</body>
+</html>
