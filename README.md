@@ -2,7 +2,7 @@
 
 AI-powered cognitive gaming and memory assistance platform for elderly dementia patients in the North Eastern Region (SIH PS 26003).
 
-**Live app:** *[Add deployment link]* | **Demo video:** *[Watch here]*
+**Live app:** *https://smriticare-sih-26003.onrender.com* | **Demo video:** *[Watch here]*
 
 ## Problem
 
