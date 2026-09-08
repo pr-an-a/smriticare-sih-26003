@@ -2455,10 +2455,12 @@ def serve_memory_image(filename):
 # START APPLICATION
 # ============================================================
 
+# Initialize the database when the application starts.
+# This is required for both local Flask and Render/Gunicorn.
+init_db()
+
 
 if __name__ == "__main__":
-
-    init_db()
 
     app.run(
         debug=True,
