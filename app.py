@@ -79,6 +79,10 @@ def get_db_connection():
 # DATABASE INITIALIZATION
 # ============================================================
 
+# ============================================================
+# DATABASE INITIALIZATION
+# ============================================================
+
 def init_db():
 
     conn = get_db_connection()
@@ -108,7 +112,7 @@ def init_db():
     """)
 
     # --------------------------------------------------------
-    # Cognitive results
+    # Cognitive Results
     # --------------------------------------------------------
 
     cursor.execute("""
@@ -137,7 +141,6 @@ def init_db():
     ]
 
     if "patient_id" not in columns:
-
         cursor.execute("""
             ALTER TABLE cognitive_results
             ADD COLUMN patient_id INTEGER
@@ -178,30 +181,78 @@ def init_db():
             meaningful_objects TEXT,
             created_at TEXT NOT NULL,
             updated_at TEXT NOT NULL,
+            region TEXT,
             FOREIGN KEY (patient_id) REFERENCES patients(id)
         )
     """)
 
     # --------------------------------------------------------
-    # Add region column to older databases if it does not exist.
+    # Memory Circle
     # --------------------------------------------------------
 
-    cursor.execute(
-        "PRAGMA table_info(memory_profiles)"
-    )
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS memory_circle (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            patient_id INTEGER NOT NULL,
+            memory_text TEXT NOT NULL,
+            response_text TEXT,
+            created_at TEXT NOT NULL,
+            response_at TEXT,
+            FOREIGN KEY (patient_id) REFERENCES patients(id)
+        )
+    """)
 
-    memory_profile_columns = [
-        column["name"]
-        for column in cursor.fetchall()
-    ]
+    # --------------------------------------------------------
+    # Personal Memory Gallery
+    # --------------------------------------------------------
 
-    if "region" not in memory_profile_columns:
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS memory_gallery (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            patient_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            person TEXT,
+            place TEXT,
+            category TEXT,
+            image_filename TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (patient_id) REFERENCES patients(id)
+        )
+    """)
+
+    # --------------------------------------------------------
+    # Ensure a patient exists
+    # --------------------------------------------------------
+
+    cursor.execute("""
+        SELECT COUNT(*) AS count
+        FROM patients
+    """)
+
+    patient_count = cursor.fetchone()["count"]
+
+    if patient_count == 0:
 
         cursor.execute("""
-            ALTER TABLE memory_profiles
-            ADD COLUMN region TEXT
-        """)
+            INSERT INTO patients (
+                name,
+                age,
+                created_at
+            )
+            VALUES (?, ?, ?)
+        """, (
+            "Demo Patient",
+            65,
+            datetime.now().isoformat()
+        ))
 
+    # --------------------------------------------------------
+    # Save database changes
+    # --------------------------------------------------------
+
+    conn.commit()
+    conn.close()
 # ============================================================
 # MEMORY REMINISCENCE — AI
 # ============================================================
