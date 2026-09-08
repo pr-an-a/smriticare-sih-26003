@@ -5,3 +5,4 @@ __pycache__/
 *.db
 uploads/
 .DS_Store
+PROJECT_CONTEXT.md
